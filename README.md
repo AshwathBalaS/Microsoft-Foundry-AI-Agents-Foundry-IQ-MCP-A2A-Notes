@@ -203,8 +203,78 @@ This completes a full walkthrough of the entire new Microsoft Foundry portal. We
 
 # **F) Important: Github Repo for Demos!!**
 
+Gave GitHub Repository Link for the demos
+
 # **G) Lab: Deploying OpenAI Model and Foundry SDK Demo (Hands-On Lab)**
+
+In this video, we begin with the first lab, starting with very basic concepts and gradually ramping things up. The goal of this lab is to deploy an OpenAI chat completion model—specifically GPT-4 (or any other supported chat completion model)—and interact with it using both the Microsoft Foundry portal and code via the Microsoft Foundry SDK (version 2).
+
+To begin, the GitHub repository has already been cloned into the VS Code environment. For this lab, we work inside the Getting Started folder. Within it, we navigate to OpenAI Chat Completions and open the Jupyter Notebook named chat_completions.ipynb, which will be used for the demo.
+
+Next, we move to portal.azure.com, navigate to the Foundry project inside the Microsoft Foundry portal, and land on the Discover section. The first task is to deploy a GPT-4 model. We go to the Models section, search for GPT-4, and select it. If GPT-4 is unavailable in your region, any OpenAI model categorized as a chat completion model can be used instead.
+
+After selecting the model, the model details page displays information such as benchmarks, quality index, latency, and estimated cost. GPT-4 costs approximately $4.38 per million tokens, which is on the higher end compared to other models. However, since this lab does not involve long-running workloads, cost is not a major concern. The model is deployed using default settings, and once deployment completes, the portal automatically opens the Chat Playground.
+
+Deploying with default settings means the model is provisioned with a 50,000 tokens-per-minute rate limit, default content safety guardrails, and a Global Standard deployment type. Global Standard is a serverless option where you pay only for the tokens consumed. This is ideal for proofs of concept and development work.
+
+Another deployment option is Global Provisioned Throughput, which is intended for production workloads. In this mode, tokens are purchased in advance, providing predictable performance, higher SLAs, and potential cost savings. While Global Provisioned Throughput is better for production scenarios, Global Standard is recommended for experimentation and development.
+
+Once deployed, the model appears in the Build → Models section. Clicking the model opens the Chat Playground, where instructions can be defined (for example, “You are a helpful AI assistant”). You can also connect tools such as a code interpreter, although advanced features like tools, memory, or knowledge bases require creating an agent, which will be covered in later labs.
+
+A simple prompt such as “Hi, my name is…” produces a response from the model. The interface also displays performance metrics such as response time, input tokens, output tokens, and total token usage. Additional tabs provide access to the model’s endpoint URI, authentication keys, monitoring metrics, estimated costs, and evaluation tools to assess whether the model fits a business use case.
+
+After validating the model in the playground, the next step is calling it from code. In VS Code, environment variables must be configured, including the model deployment name (for example, gpt-4) and the Foundry project endpoint, which can be copied from the Foundry portal home page. These environment variables are saved before proceeding.
+
+Inside the Jupyter notebook, the Azure AI Projects SDK (Foundry SDK v2, pre-release) is used. This SDK works only with standalone Foundry projects and does not support hub-based projects. The notebook also installs required dependencies such as openai, python-dotenv, and azure-identity. Environment variables are loaded from the .env file, and a Foundry Project Client is initialized.
+
+Before running the notebook, Azure authentication is required. This is done by opening the integrated terminal in VS Code and running az login, ensuring that the Azure CLI is installed. After signing in and selecting the correct subscription, the Foundry Project Client is authenticated using the logged-in credentials.
+
+Once authenticated, the OpenAI client is initialized from the Foundry Project Client. This client is specifically used for OpenAI models that rely on the chat completions API. Models from other providers (such as DeepSeek or Claude) require different clients, which will be covered in later labs.
+
+Finally, a request is sent to the model using the Chat Completions / Responses API. The system prompt defines the assistant’s behavior, and a user prompt such as “Can you tell me about Microsoft Foundry?” is sent. The response is printed, confirming that the GPT-4 model is successfully deployed and callable through code.
+
+With this, the first lab is successfully completed. The OpenAI GPT-4 model is deployed, tested in the Foundry Chat Playground, and invoked programmatically using the Foundry SDK v2. The next videos will build on this foundation and introduce more advanced concepts.
 
 # **H) Lab: Deploying Claude and Foundry SDK Demo (Hands-On Lab)**
 
+In this lab, we deploy a Claude model from the Foundry Model Catalog and invoke it using Foundry SDK v2 concepts, specifically through the Anthropic SDK. For this exercise, we navigate to Getting Started → Foundry Catalog Completions, where we find a .env file and a Jupyter notebook that contains the main codebase.
+
+Before calling the model via code, the first step is to deploy the Claude model. From the Discover page in the Foundry portal, we search for Claude. Two options are available, and for this lab, we proceed with Claude Opus 4.5. The model is deployed using the default settings, and the selected industry is Education.
+
+In terms of pricing, Claude Opus 4.5 is extremely cost-effective. It costs approximately $0.005 per million tokens for input inference and $0.025 per million tokens for output inference under the pay-as-you-go model. After agreeing to the terms, we proceed with deployment and wait for the model to be fully provisioned.
+
+Once deployment starts, the model initially remains in the Creating state. Attempting to interact with it during this phase results in an error indicating that the API deployment is not yet ready. After waiting for about a minute, the deployment succeeds, and the model becomes available. At this point, a simple test prompt such as “Hi, my name is…” confirms that the model responds correctly in the playground.
+
+With the model successfully deployed, we move on to configuring the environment variables. Unlike the previous lab where the Foundry SDK was used directly, this lab uses the Anthropic SDK. Therefore, we need three key values: the model endpoint, the model deployment name, and the API key.
+
+To retrieve these values, we return to portal.azure.com and open the model in the playground. Next to the Chat option, there is a Code tab. From here, we copy the model endpoint, which is used for API calls. This endpoint is specific to the deployed model and is different from the Foundry project endpoint. The model deployment name is set to ClaudeOpus45, and the API key is obtained by clicking the key icon in the portal.
+
+After copying the endpoint, deployment name, and API key into the .env file, the changes are saved. The notebook uses Anthropic SDK version 0.75.0. Before executing the code, the Python kernel is restarted to ensure a clean environment.
+
+The notebook begins by loading environment variables from the .env file. Using the model endpoint and API key, an Anthropic Foundry client is created. This client establishes a secure connection between the Anthropic SDK and the Foundry project resource.
+
+Once the client is initialized, the Messages API is used to send a request to the model. The system prompt defines the assistant’s behavior as a helpful translator from English to Spanish. The user prompt requests the translation of a simple sentence: “Hi, my name is, how are you today?” The maximum output tokens are set to 1024.
+
+After receiving the response, it is converted into a dictionary, and the translated output text is extracted. The model successfully returns the Spanish translation, confirming that the deployment and code integration are working as expected.
+
+With this, the lab concludes successfully. We deployed an out-of-the-box Anthropic model (Claude Opus 4.5) from the Foundry Model Catalog and invoked it programmatically using the Anthropic SDK. Having validated both deployment and inference, we are now ready to proceed to the next set of videos.
+
 # **I) Lab: Microsoft Foundry Extension in VSCode (Hands-On Lab)**
+
+In this video, we explore how to work with Microsoft Foundry directly inside VS Code using the Foundry extension from the VS Code Marketplace. This allows you to interact with Foundry resources in a code-native environment without constantly switching to the Azure portal.
+
+To get started, open VS Code and navigate to the Extensions Marketplace. The first extension to install is the Azure Resources Extension. Once installed, open the extension and click the plus (+) icon to sign in with your Azure account. After signing in, VS Code automatically loads all resources available across your Azure subscriptions.
+
+Once the Azure Resources extension is set up, return to the Extensions Marketplace and search for Microsoft Foundry. Install the Foundry extension in your VS Code environment. After installation, opening the extension presents a dedicated Foundry pane where you are automatically signed in using your Azure credentials.
+
+Within the Foundry extension, you can view various components such as Models, Agents, the Model Catalog, the Model Playground, and the Local Agent Playground. Expanding the Models section displays all the models deployed within your Foundry project. Selecting a model, such as a Claude model, opens its detailed view, including information like the target URI, authentication keys, and other configuration details.
+
+To interact with a model directly, open the Model Playground within VS Code. From the model selector, choose your deployed model—for example, Claude Opus 4.5. This loads the model into the playground, enabling chat-based interaction similar to the experience in portal.azure.com.
+
+In the playground, you can define a system prompt, such as setting the assistant to be a helpful AI assistant. You can also configure parameters like temperature and maximum response tokens. Once configured, submitting a prompt returns a response from the model in real time.
+
+The Foundry extension also supports agents. Once agents are created, they appear under the Declarative Agents and Hosted Agents sections. These agents can be tested using the Remote Agent Playground, similar to how models are tested in the Model Playground. Since no agents are configured at this point, the remote agent playground is not demonstrated in this video.
+
+Overall, the Foundry extension in VS Code mirrors much of the experience available in the Azure portal, while providing it directly within a developer-friendly, code-centric environment. This makes it easier to manage models, experiment with prompts, and work efficiently without leaving VS Code.
+
+With that, this short walkthrough of the Foundry VS Code extension concludes. In the next videos, we will continue building on this foundation and explore more advanced capabilities.
