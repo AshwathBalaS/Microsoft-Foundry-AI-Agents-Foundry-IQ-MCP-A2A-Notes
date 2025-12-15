@@ -21,6 +21,22 @@ This Repository contains my "Microsoft Foundry: AI Agents, Foundry IQ, MCP &amp;
 
 **I) Lab: Microsoft Foundry Extension in VSCode (Hands-On Lab)**
 
+**(II) Microsoft Foundry AI Agents**
+
+**A) Lab: Agent Service Portal Walkthrough (Hands-On Lab)**
+
+**B) Lab: Creating a Basic Agent from Python Code (Hands-On Lab)**
+
+**C) Lab: Creating a Web Searcher Agent (Hands-On Lab)**
+
+**D) Lab: Creating a Code Interpreter Agent (Hands-On Lab)**
+
+**E) Lab: Creating Agent with OpenAPI Tool (Hands-On Lab)**
+
+**F) Lab: Creating a MCP Server Agent (Hands-On Lab)**
+
+**G) Creating a Multi-Tool Agent (Hands-On Lab)**
+
 
 
 
@@ -278,3 +294,223 @@ The Foundry extension also supports agents. Once agents are created, they appear
 Overall, the Foundry extension in VS Code mirrors much of the experience available in the Azure portal, while providing it directly within a developer-friendly, code-centric environment. This makes it easier to manage models, experiment with prompts, and work efficiently without leaving VS Code.
 
 With that, this short walkthrough of the Foundry VS Code extension concludes. In the next videos, we will continue building on this foundation and explore more advanced capabilities.
+
+# **(II) Microsoft Foundry AI Agents**
+
+# **A) Lab: Agent Service Portal Walkthrough (Hands-On Lab)**
+
+In this video, we’ll do a quick walkthrough of the Agents section in the Microsoft Foundry portal. We’ll create our very first demo agent using the portal’s graphical user interface and get started with the agent service quickly.
+
+I’m currently on the Microsoft Foundry portal, inside the Build area. On the left-hand side of the screen, the very first option you’ll see is the Agents section. This is what we’ll use to build our agent. When I click on Create Agent, I can name the agent. I’ll name it Demo Agent and then click on the Create button.
+
+Once the agent is created, the next step is to power it with a Foundation Large Language Model. You can choose from different models—OpenAI models, Anthropic models like Claude Opus 4 or 5, and others. The choice is completely up to you. For this demo, I’ll go ahead with GPT-4.
+
+After selecting the model, you can provide instructions to your agent. I’ll keep it simple and type:
+“You are a helpful AI assistant.”
+After entering the instruction, it’s important to click the Save button. This saves the configuration and creates version two of the agent.
+
+A new capability added to the Microsoft Foundry agent service is agent versioning. Earlier, there wasn’t a way to track or revert to previous versions of an agent. Now, every time you click Save—whether through the GUI or a code-first environment—the agent version increments automatically. This allows you to go back in time, view older versions, and even compare them. It’s similar to how versioning works in Docker Hub or container registries.
+
+After saving, you can test the agent by typing a message. For example, I type:
+“My name is Joe. Nice to meet you.”
+The agent responds appropriately:
+“Nice to meet you too. How can I assist you today?”
+
+You can also see token usage details, such as input tokens (27) and output tokens (19). Additionally, there is an AI Quality section. When you open it, you’ll find metrics like Intent Resolution and Task Adherence, both of which return a binary pass or fail status. In this case, both pass.
+
+If you click on the Debug button, it opens the Trace view, which is powered by OpenTelemetry. This forms a crucial part of observability and tracing within the Foundry control plane. Here, you can see the Conversation ID, trace ID, span ID, and other unique identifiers associated with the interaction.
+
+The Conversation ID is particularly important. In hub-based projects, this concept existed as threads. In standalone projects, the built-up version of threads is what we now call a conversation ID. It stores the entire interaction history between the user and the agent, including both user inputs and agent responses.
+
+You can store this conversation ID in a key-value store such as Redis. When a user comes back in a new session, you can retrieve that conversation ID and continue the interaction seamlessly. This helps preserve context across multiple sessions.
+
+Within the trace, you can see the input, output, metadata, attributes (which combine user input and agent output), and usage details like prompt tokens, completion tokens, and total tokens.
+
+The Evaluation section provides deeper insight into AI quality. For example, Intent Resolution scores how well the agent understood the user’s intent. In this case, it scores 5 out of 5 because the user’s intent was simply a greeting, and the agent responded correctly.
+
+Task Adherence evaluates whether the agent followed the required steps to complete a task. This becomes especially important when tool calls are involved—such as APIs, enterprise knowledge retrieval, or multi-step workflows. Even though this example was simple, the agent still scored 5 out of 5 for task adherence.
+
+Moving on to Tools, you can enhance your agent with several built-in capabilities. These include file search, code interpreter, Azure AI Search grounding, Bing search, computer use, browser automation, Fabric data agent integration, and SharePoint document access.
+
+The Code Interpreter allows the agent to generate and execute Python code in a sandbox environment, which is useful for tasks like generating charts. Azure AI Search enables retrieval-augmented generation (RAG) using vector indexes built on enterprise data.
+
+In the Knowledge section, you can connect your agent to Foundry IQ. Foundry IQ is a powerful system that deserves its own deep dive, and there will be a dedicated section covering it later.
+
+There is also a Memory Store, which retains context to personalize interactions. A memory store is auto-created and uses the deployed model. It helps persist user memory across sessions. While conversation IDs are the simplest way to retain history, memory stores offer advanced capabilities such as summarization and internal vector search.
+
+You can also attach Guardrails and Content Filters to control thresholds for sensitive content such as sexual material, hate speech, or jailbreaking attempts.
+
+In the YAML section, you can view the agent definition. This agent is currently a prompt-based agent using GPT-4 with no tools attached. You can compare YAML files across different versions to see how the agent has evolved. There’s also a Code section that provides a starter snippet to call the agent.
+
+Next, let’s see tools in action. I add the File Search tool and upload a PDF from a GitHub repository—specifically, a document titled Carbon Ops ESG Intelligence Model. Foundry automatically creates a small, temporary vector index optimized for retrieving information from this document.
+
+Once indexing is complete, I start a new chat and ask:
+“Tell me something about the Carbon Ops ESG Intelligence Model.”
+
+The agent analyzes the uploaded document, retrieves relevant information, and provides a summarized response. It also shows the document chunk used, the tool invoked (file search), and total token usage (5,496 tokens).
+
+In the Trace view, you can see that the response involved a tool call. The metadata includes the file ID, file name, and a relevance score (0.033). This score indicates how relevant the document was to answering the query and becomes critical when multiple documents are involved.
+
+After this, I save the agent again, creating version three.
+
+In the Tools section, you can connect additional services such as Fabric Data Agent, SharePoint sites, browser automation, and MCP servers. Supported MCP servers include Azure Cosmos DB, Databricks Genie, MongoDB, Elasticsearch, Azure Managed Redis, and more. You can also register custom MCP servers or bring in APIs using OpenAPI specifications. Agent-to-agent tools are also supported.
+
+Finally, in the Knowledge section, you can fully leverage Foundry IQ to index enterprise knowledge from OneLake, SharePoint, and Microsoft 365 using Azure AI Search—all in one place.
+
+That wraps up the video. We covered a complete walkthrough of the Microsoft Foundry Agent Service, created a demo agent, explored versioning, conversation IDs, memory stores, observability, tracing, evaluation, and tool usage, including file search in action.
+
+# **B) Lab: Creating a Basic Agent from Python Code (Hands-On Lab)**
+
+In this lab, we’ll try out the Microsoft Foundry Agent Service in a code-first environment. Instead of using the portal UI, we’ll create and manage our agent using the Microsoft Foundry SDK. Once created, the agent will also be visible in portal.azure.com and Foundry Studio. We’ll focus on setting everything up using code and understanding how Conversation ID helps maintain conversation history for the agent.
+
+The lab’s codebase is located under Agent Service → Getting Started, and the notebook inside that directory is what we’ll run for this lab. Along with that, we’ll be filling in required environment variables inside a .env file.
+
+The first step is to set up the environment variables. We need two things: the Foundry Project Endpoint and the Model Deployment Name. This step is repetitive, so it may be skipped in some videos to avoid unnecessary length, but it’s important to understand. Once you do it a couple of times, it becomes second nature.
+
+To get the project endpoint, we go to Foundry Studio, navigate to the Home section, and copy the Project Endpoint along with the Project API Key. Next, we need the model deployment name. For that, we go to the Build area and open the Models section. In this lab, we’re building the agent on top of GPT-4, though you could also use Claude or any other supported foundational model.
+
+Once the environment variables are set, we’re ready to run the Python notebook. The notebook uses the Azure AI Projects SDK (Foundry SDK v2.0.0-beta.2) along with the OpenAI SDK, python-dotenv, and Azure Identity. Initially, we load the environment variables from the .env file and initialize a Foundry Project Client, which allows the notebook to connect to Foundry Studio and create resources inside the Foundry Agent Service.
+
+Next, we create our agent—this time, a Batman agent. This is a fun example and a childhood dream coming true: being able to converse with Bruce Wayne in real time. The agent name is Batman Agent.
+
+To create the agent, we use the project client and call project_client.agents.create_version. This creates a new version of the agent. Since we’re creating it for the first time, this becomes version one. Each time this code block runs, it automatically creates a new version of the agent.
+
+While creating the agent, we provide the agent name, the model deployment name (GPT-4 in this case), and the system prompt. The system prompt defines the agent’s behavior:
+
+“You are Batman, the Dark Knight of Gotham City. Respond to all queries in character as Batman would.”
+
+Once the agent is created, we receive the Agent ID and the version number, which confirms that version one of the Batman agent has been successfully created.
+
+Next, we set up the conversation system. For this, we create an OpenAI client. The OpenAI client is required to retrieve responses from the agent using the Chat Completions API. This works because we’re using GPT-4. If we were using Claude, we’d need the Anthropic SDK instead.
+
+We then create a conversation object, which stores the chat history between the user and the agent. This returns a Conversation ID, which we’ll reuse for all subsequent interactions to maintain context.
+
+After that, we set up a while loop for the chat. As long as the user input is not exit or quit, the loop continues running. Inside the loop, we send the user input to the agent using the OpenAI Chat Completions API, along with the conversation ID and the agent reference. By default, the latest version of the agent is used.
+
+The first user query is:
+“My name is Kojo Singh Bakshi. And how is Gotham?”
+
+Gotham, of course, is the city Batman protects. The agent responds in full Batman character, describing Gotham as dark, dangerous, and filled with corruption—but reassuring that it’s still under his protection. The response is very “Batman-ish,” confirming that the system prompt is working as intended.
+
+To demonstrate Conversation ID in action, we ask a follow-up question:
+“Can you tell me what my name was?”
+
+Because the agent has access to the previous conversation history via the conversation ID, it correctly remembers the name given earlier. The response is dramatic, as expected from Batman, but it accurately recalls the name Kojo Singh Bakshi, proving that conversation history is being preserved across messages.
+
+This confirms that Conversation ID allows the agent to maintain context across multiple user interactions within the same session.
+
+Finally, we type exit, which ends the chat loop and exits the program.
+
+Before concluding the video, we verify whether the agent was created in the Foundry Portal. Navigating to the Agents section, we can see Batman Agent – Version 1 listed there. If we open the Traces section, we can view the conversation ID and the complete trace of the interaction, including user inputs and agent outputs.
+
+The total number of tokens consumed during the conversation is 219 tokens. The first run consumed 139 tokens, and the second run used more tokens because the conversation history increased the token count. This highlights an important consideration when building systems at scale: token inflation due to chat history. Managing this efficiently becomes critical in production environments.
+
+That concludes the demo for this lab. We successfully created an agent in a code-first environment, validated conversation history using Conversation ID, observed tracing and token usage, and confirmed the agent’s presence in the Foundry Portal.
+
+# **C) Lab: Creating a Web Searcher Agent (Hands-On Lab)**
+
+In this lab, we’ll be creating a Web Searcher Agent in Microsoft Foundry using the Foundry SDK in a code-first environment. To perform this lab, we navigate to the web-search folder located inside the agent-service directory. This folder contains a Python notebook and a .env file where we configure the required environment variables.
+
+The environment variables have already been set, including the Foundry Project Endpoint and the Model Deployment Name. For this lab, the model deployment used is GPT-4.
+
+The goal of the web searcher agent is straightforward. We want to create a Foundry agent and give it access to the Web Search tool, which is already available in the Microsoft Foundry ecosystem. Everything in this lab is done programmatically using the SDK.
+
+When a user query such as “Tell me about the latest trends and advancements in renewable energy” comes in, the query is sent to the Foundry agent. The agent analyzes the intent of the query, evaluates the available tools, invokes the Web Search tool, retrieves real-time information from the web, and finally summarizes that information into a response for the user.
+
+We begin by loading the environment variables from the .env file—specifically the Foundry project endpoint and the model deployment name. After that, we initialize the Foundry Project Client, which allows our code to connect to the Foundry portal and interact with the agent service.
+
+Since this agent is based on GPT-4, an OpenAI model, we also need to create an OpenAI client. This client is responsible for sending messages to the agent and receiving responses. The OpenAI client is created using the Foundry project client initialized earlier.
+
+Next, we create the agent itself. To do this, we use project_client.agents.create_version. The agent is named Web Search Agent. In the agent definition, we provide the GPT-4 model deployment name, an instruction set, and a tools array. Inside the tools array, we grant the agent access to the Web Search tool.
+
+The system prompt for the agent is simple and clear:
+“You are a helpful assistant that uses web search to answer user queries.”
+
+Once the agent is created, we receive an Agent ID, which we then use to create a conversation object. This conversation object allows us to maintain a conversation history and returns a Conversation ID that will be used for subsequent interactions.
+
+With the conversation object in place, we send a user query to the agent:
+“What are the latest advancements in renewable energy?”
+
+This query is sent using the OpenAI Client Responses API, along with the conversation ID and a reference to the agent. Importantly, the user query itself does not explicitly instruct the agent to use the web search tool. Instead, the agent autonomously analyzes the intent of the query, evaluates the available tools, and decides to invoke the Web Search tool.
+
+This behavior highlights the power of the Foundry agent architecture. The agent independently determines when a tool should be fired based on user intent and system configuration. In this case, it correctly invokes the web search tool to retrieve up-to-date information.
+
+The response indicates that the renewable energy sector has seen several key advancements as of 2025. It covers topics such as next-generation solar panels, including bifacial solar panels, advancements in photovoltaics, and low-cost renewable energy technologies. The response also includes links to the websites used as grounding sources.
+
+By navigating to these links, we can verify that the agent retrieved real information from the web. For example, the sources discuss cost-effective photovoltaics and bifacial solar panels, confirming the accuracy of the retrieved content.
+
+Each of these URLs is shown as part of the grounding knowledge used by the agent. This transparency helps validate the response and understand where the information originated.
+
+Next, we move to the Foundry Portal to validate what happened behind the scenes. In the Agents section, we can see Web Search Agent – Version 1 listed. The agent clearly shows that it has the Web Search tool attached.
+
+If we inspect the agent’s YAML definition, we can confirm that the web search preview tool is present under the tools configuration.
+
+Moving to the Traces section, we locate the conversation ID associated with this interaction. Drilling into the trace reveals that the agent indeed made a call to the Web Search plugin. The trace shows an attribute with the type set to web_search_call, confirming that the tool was invoked.
+
+The trace also reveals the query sent to the web search operation:
+“Latest advancements in renewable energy 2025.”
+
+This query was derived directly from the user’s original input. The web search plugin executes a search operation using this query and returns results to the agent.
+
+Inspecting the response payload, we can see the structure of messages returned by the web search plugin. Within the content array, there is a notations array containing URL citations. Each citation includes a URL and a title, such as “Four Key Trends to Watch in Clean Energy Technology in 2025.”
+
+The agent aggregates information from these URLs and synthesizes a coherent response for the user. The trace also shows the user input, the agent output, and metadata about token usage.
+
+In total, this interaction consumed 7,254 tokens, reflecting the cost of web search grounding, document ingestion, and response generation.
+
+This concludes the lab. We successfully built a Web Search Agent using the Foundry SDK in a code-first environment, observed autonomous tool invocation, validated grounding sources, and explored the trace stack to understand how the agent analyzed intent, called the web search plugin, and generated the final response.
+
+# **D) Lab: Creating a Code Interpreter Agent (Hands-On Lab)**
+
+In this video, we’ll take a look at the Code Interpreter capability that you can provide to your agent in the Microsoft Foundry ecosystem, using a code-first approach with the Foundry SDK.
+
+To perform this lab, we navigate to the code-interpreter folder inside the agent-service directory. This folder contains three files. The first file is used for setting environment variables, which have already been configured with the Foundry project endpoint and the model deployment name. The second file is a Python notebook that contains the main codebase for this lab. The third file is a CSV file named electronics_products.csv, which contains product-related data such as product ID, product name, price, and color. This CSV file will be used as input data for the code interpreter analysis in this lab.
+
+The overall flow of the lab is as follows. First, we upload the CSV file as a data asset to the Microsoft Foundry project through portal.azure.com. Next, we create a code interpreter agent and grant it access to both the code interpreter tool and the uploaded electronics_products.csv file.
+
+When a user query comes in—such as “Create a column chart with products on the x-axis and prices on the y-axis”—the query is sent to the Foundry agent. The agent analyzes the intent, evaluates the available tools, identifies that it has access to the code interpreter tool and the CSV file, generates Python code using libraries such as Matplotlib, executes that code in a sandboxed environment, and finally returns the generated image as output. The result is a column chart with products on the x-axis and prices on the y-axis.
+
+The first step is loading the environment variables from the .env file, which includes the Foundry project endpoint and the model deployment name. Once that’s done, we create a Foundry Project Client to establish a connection between the codebase and the Foundry ecosystem.
+
+Since we are using GPT-4, which is an OpenAI model, we need to create an OpenAI client. This client is required to send queries to the agent and retrieve responses using the Responses API or Chat Completions API. The OpenAI client is created using the Foundry project client initialized earlier.
+
+Next, we upload the electronics_products.csv file. To use the code interpreter with a file, the file must first be uploaded to the Foundry project, not directly to the agent. We use the OpenAI client’s files.create method with the purpose set to assistants, since the file will be used by the agent for code execution. The file is opened in read mode and uploaded, after which we receive a file ID. This file ID is crucial because it will later be provided to the agent so it can access the file during execution.
+
+Once the file is uploaded and the file ID is obtained, we proceed to create the Code Interpreter Agent. Using project_client.agents.create_version, we create the first version of the agent. The model deployment name is set to GPT-4, and the system prompt instructs the agent that it is a helpful assistant with code interpreter capabilities.
+
+In the tools definition, we add the Code Interpreter tool and pass the uploaded file ID inside a container of type code_interpreter_tool_auto. This configuration ensures that whenever the agent invokes the code interpreter, it automatically has access to the uploaded CSV file. This allows the agent to perform computations or visualizations directly on the dataset.
+
+After the agent is created, we receive the agent ID, the agent name, and the version number, which is version one in this case.
+
+Next, we create a conversation object to store the chat history between the user and the agent. This conversation object enables context retention and allows the agent to track interactions using a proprietary conversation ID.
+
+Now we invoke the agent using the OpenAI client’s responses.create method. The user query is:
+“Could you please create a column chart with products on the x-axis and the respective prices on the y-axis?”
+
+At this stage, we do not print the textual response output. Printing response.output_text would only give a summary message from the agent, such as stating that the chart was created. However, the actual chart is generated as an image file (PNG) and saved as part of the Foundry project. The key task here is to programmatically retrieve that image.
+
+To do this, we store the response ID returned by the agent. We then inspect the response object to check whether it contains a file citation. If a file citation exists, we extract the file ID, file name, and container ID associated with the generated image.
+
+Using these values, we access the container, download the file in read mode, and save it locally within the project directory. Once downloaded, the image file is available as a column chart showing products on the x-axis and prices on the y-axis—exactly what we intended the agent to create.
+
+Next, we inspect what code the agent actually executed in the sandbox environment. To do this, we go to the Foundry Portal, navigate to the Agents section, and select the Code Interpreter Agent. From there, we open the Traces section and drill down into the trace associated with the conversation ID.
+
+Inside the trace, we can see that the agent invoked the Code Interpreter tool. The trace shows the Python code executed in the sandbox. Initially, the agent imports the pandas library and reads the CSV file to understand its structure. It inspects the first few rows to identify relevant columns.
+
+In the next step, the agent reasons about the dataset internally, identifying the product name and price columns as relevant for creating the chart. This internal reasoning is recorded as part of the conversation history under the same conversation ID.
+
+Finally, the agent executes the final block of code using Matplotlib to generate the column chart. Once completed, it responds with a message indicating that the chart has been created and asks if any modifications are needed. The generated image is referenced in the response annotations, which include the container ID, file ID, and file name.
+
+We then programmatically retrieve this image using those identifiers, just as demonstrated earlier.
+
+If we navigate to the Data section under the Foundry project, we can see all uploaded datasets. This includes the original electronics_products.csv file as well as any other files used by agents, such as PDFs uploaded for file search in previous labs. Every file used by an agent—whether for code interpreter or file search—must first be uploaded as a dataset to the Foundry project.
+
+Behind the scenes, the workflow is consistent: upload the file, retrieve the file ID, and provide that file ID to the agent during creation so it can access the file when needed.
+
+That concludes this video. We successfully demonstrated how to build and use a Code Interpreter Agent in Microsoft Foundry using a code-first approach, including file uploads, sandboxed code execution, trace inspection, and programmatic retrieval of generated artifacts.
+
+# **E) Lab: Creating Agent with OpenAPI Tool (Hands-On Lab)**
+
+# **F) Lab: Creating a MCP Server Agent (Hands-On Lab)**
+
+# **G) Creating a Multi-Tool Agent (Hands-On Lab)**
