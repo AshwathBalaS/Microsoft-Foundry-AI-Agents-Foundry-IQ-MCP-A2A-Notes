@@ -37,6 +37,13 @@ This Repository contains my "Microsoft Foundry: AI Agents, Foundry IQ, MCP &amp;
 
 **G) Creating a Multi-Tool Agent (Hands-On Lab)**
 
+**H) Lab: Working with Browser Automation Tool (Hands-On Lab)**
+
+**I) Introduction to Foundry Memory Store**
+
+**J) Lab: Assigning Azure Rule to Foundry for Memory Store Lab (Hands-On Lab)**
+
+**K) Lab: Working with Foundry Memory Store (Hands-On Lab)**
 
 
 
@@ -511,6 +518,194 @@ That concludes this video. We successfully demonstrated how to build and use a C
 
 # **E) Lab: Creating Agent with OpenAPI Tool (Hands-On Lab)**
 
+In this video, we will be performing a lab where we create an agent using the Foundry SDK and supply it with an OpenAPI tool. For this lab, we are working inside the OpenAPI tool folder, which contains three files. The first file is the environment variables file (.env), the second is a Jupyter notebook, and the third is a file that contains the OpenAPI definition of the API we will be supplying to our agent, written in JSON format. All of these files are located under the agent service folder, which you can see in the project structure.
+
+If you look at the .env file, it is already populated with the Foundry project endpoint and the model deployment name. For this lab, we will be using the OpenAI GPT-4 model to build the agent itself.
+
+Now, coming to the lab flow, it works as follows. The weather_openapi.json file contains an OpenAPI definition of a free-to-use weather API, which can be accessed using the URL wttr.in. We will also take a look at how this API behaves. This OpenAPI definition includes details about all the available paths, parameters, GET and POST requests, and descriptions of how the responses from these requests will look. This information enables our agent to decide which endpoint to call, what query parameters to use, and what kind of response to expect.
+
+When a user query such as “Tell me about London’s weather” comes in, the request goes to the Foundry agent. The agent understands that the user is asking for real-time information, which can be accessed either via a web search, an OpenAPI tool, or some external connection. Since the agent has access to an OpenAPI weather tool, it looks at the OpenAPI specification provided to it. Based on that definition, it decides which API endpoint to call, which query parameters to include, and how to handle authentication if required.
+
+In this case, the API is unauthenticated and free to use, so we do not need to configure any authentication for the agent. However, if authentication such as JWT or OAuth were required, that could also be handled within the OpenAPI specification.
+
+Let’s now take a closer look at the OpenAPI definition itself. The specification uses OpenAPI version 3.1.0. The title of the API is “Get Weather Data”, and the description states that it retrieves current weather data for a location based on wttr.in. Both the title and description are extremely important because when the agent is deciding which tool to use, it evaluates these fields to determine whether the tool is relevant to the user’s query. Better-defined titles and descriptions result in better agent behavior.
+
+The API is hosted on a backend server URL pointing to wttr.in. Under the paths section, the API defines a /location endpoint that supports a GET request. This endpoint retrieves weather information for a specific location. The description of this endpoint is important because the agent uses it to decide whether this path should be invoked for the user’s request. The operation ID for this endpoint is getCurrentWeather, which is essentially a naming convention.
+
+This endpoint accepts query parameters, including a location parameter. The description specifies that this parameter should contain the city or location for which weather data is required. It is a string parameter and is passed as part of the query string. The API can return a 200 status code for a successful response, which will be a string containing the weather data. A 404 status code indicates a client-side error, such as an incorrect or unknown location.
+
+To demonstrate how the API works, we can manually call it. If we navigate to wttr.in/London?format=j1, we receive a JSON response. The response is fairly large and includes details such as the current temperature in both Celsius and Fahrenheit, cloud cover, humidity, precipitation, pressure, UV index, visibility, and a textual weather description (for example, “partly cloudy”).
+
+With that understanding, we proceed to the lab implementation. First, we set up the environment variables by loading the Foundry project endpoint and model deployment name from the .env file. Next, we initialize the Foundry project client, which allows our codebase to connect to the Foundry project.
+
+We then initialize the OpenAPI tool. This involves opening the file that contains the OpenAPI definition, reading it into a variable (for example, openapi_weather), and then using it to create an OpenAPI tool. The tool type is set to openapi, the name is set to weather, the specification is the OpenAPI JSON we just read, and the authentication type is set to anonymous.
+
+After that, we create the agent itself. The agent is named Weather Agent, and we create version 1 using project_client.agents.create. In the agent definition, we provide instructions stating that the agent should help users by providing weather information using the supplied OpenAPI tool. The weather tool is then appended to the agent’s tools array. Once the agent is created, we receive an agent ID in return.
+
+Next, we create an OpenAPI client to interact with the agent and also generate a conversation ID to maintain conversational context. We then ask the agent a question: “What’s the weather like in New York City today?” This query is sent to the agent using the OpenAI client, passing in the conversation ID, agent reference, and the user input.
+
+After running the cell, the agent responds with detailed weather information for New York City. It reports the current temperature as 2°C, feels-like temperature as -2°C, weather condition as freezing fog, humidity at 51%, wind coming from the west-southwest at 17 km/h, and visibility of 10 km. It also provides a forecast showing a high of 4°C, a low of -3°C, UV index of 0, sunrise at 7:40 a.m., and sunset at 4:28 p.m.
+
+To verify the correctness of the response, we manually query the API using wttr.in/New York?format=j1. The values returned by the API—such as feels-like temperature, UV index, wind direction, and wind speed—exactly match the information provided by the agent, confirming that the agent is correctly consuming the API response.
+
+Finally, if we navigate to the Foundry portal, we can see the newly created agent. In the tools section, the OpenAPI definition is visible. In the traces section, selecting the conversation ID shows the full trace of the interaction. We can see that the agent invoked a remote function call corresponding to the getCurrentWeather operation, passing location=New York City and format=j1 as arguments.
+
+Although the API response itself is not fully visible in the trace—likely because it was large and truncated—we can still see the final message generated by the agent. The metadata section reveals that 11,026 tokens were used during this interaction. Despite the user query and response being relatively small, the token usage is high because the agent processed the entire API response, which significantly increases token consumption.
+
+This highlights an important consideration when using OpenAPI tools: large API responses can inflate token usage, making cost estimation challenging. Controlling or optimizing this behavior remains a gray area and is something to watch out for. Nonetheless, this lab successfully demonstrates how to create an agent using an OpenAPI tool definition.
+
+With that, we conclude the lab on creating an agent with an OpenAPI tool, and we can now move on to the next set of videos.
+
 # **F) Lab: Creating a MCP Server Agent (Hands-On Lab)**
 
+With this lab, we will explore how to integrate an MCP (Model Context Protocol) server—specifically an already existing MCP server—into a Foundry agent, so that the MCP server can act either as a tool or as a knowledge retrieval source for the agent.
+
+For this lab, we are working inside the MCP server folder, which is located within the Agent Service parent folder. Inside the MCP server folder, there are two files. The first file is the environment variables file (.env), and the second file is a Jupyter notebook that contains the entire codebase for the lab.
+
+Let’s first understand the overall flow of the lab. There is an MCP server that has already been published by the Microsoft Learn team. This MCP server provides access to all Microsoft Learn documentation, code examples, and learning modules available on learn.microsoft.com. Essentially, the entire Microsoft Learn ecosystem is exposed through this MCP server.
+
+We will take this publicly accessible MCP server, grab its URL, and integrate it with our Foundry agent. This MCP server is unauthenticated, meaning it allows anonymous access and is completely free to use. Once connected, the agent can use this MCP server to retrieve information whenever a user query comes in.
+
+For example, if a user asks, “Find me learning paths on Azure AI services for building intelligent applications”, the query is sent to the agent. The agent then looks at the connected MCP server, lists all the tools exposed by that MCP server, and invokes the appropriate tool to retrieve the required information. The retrieved data is then used by the agent to generate an accurate response for the user.
+
+Now, looking at the .env file, the Foundry project endpoint and model deployment name are already configured. However, one value is still missing—the MCP server name. To fill this in, we must first register the MCP server in the Foundry portal. Any MCP server—whether custom-built or provided by a verified vendor like Microsoft—must be registered in the Foundry portal to enable governance, observability, and compliance.
+
+To do this, we navigate to the Foundry portal, go to the Build section, and then move to the Tools area, which is where agent tools are managed. From there, we select Connect Tool, choose Custom, and then select Model Context Protocol Server. Clicking on Create brings up the configuration screen.
+
+We then provide the tool details. The name is set to MS Learn MCP Server. Next, we specify the remote MCP server endpoint. To confirm the correct endpoint, we search for “Microsoft Learn MCP server” and find the official URL, which is learn.microsoft.com/api/mcp.
+
+Since this MCP server is unauthenticated, we select the Unauthenticated option. If this were a protected MCP server, we could configure authentication using API keys, Microsoft Entra ID, or OAuth identity passthrough. After selecting the unauthenticated option, we click Connect, which registers the MCP server in the Foundry environment.
+
+Once registration is complete, the MCP server appears in the Tools section of the Foundry portal. We then copy the registered MCP server name and paste it into the .env file under the MCP server name field. At this point, the environment setup is complete.
+
+Next, we execute the codebase. The first step is loading the environment variables and storing them as Python variables—namely, the Foundry project endpoint, model deployment name, and MCP server name. It is critical that the MCP server name exactly matches the name registered in the Foundry portal, otherwise the integration will fail.
+
+We then initialize the Foundry project client using the project endpoint and default Azure credentials. Alongside this, we also initialize the OpenAI client, which will later be used to invoke the agent built on the GPT-4 model.
+
+To connect the MCP server to the agent, we need something called a connection ID. Every tool registered in the Foundry portal is assigned a unique connection ID. This ID is used to grant the agent access to that tool.
+
+The notebook retrieves the connection ID by calling project_client.connections.list(). It iterates through the available connections and compares the connection name with the MCP server name stored in the environment variables. When a match is found, the corresponding connection ID is stored in a variable.
+
+The MCP server connection ID follows a specific structure. It includes the subscription or tenant identifier, resource group name, project name, and finally the connection name (for example, /connections/ms-learn-mcp-server). This structure applies to MCP servers as well as other tool connections.
+
+With the connection ID available, we create the MCP tool specification. This includes a server label (used as an identifier), the MCP server URL (learn.microsoft.com/api/mcp), and a parameter called require_approval, which is set to never. By default, this value is set to always, which would require manual approval for every MCP call. Since we are working in a code-first environment, we disable approval to avoid unnecessary complexity.
+
+The final parameter in the MCP tool specification is the project connection ID, which is set to the MCP server connection ID we retrieved earlier. With this, the MCP tool is fully configured.
+
+Next, we create the agent itself. The agent is named MCP Agent, uses the GPT-4 deployment, and has instructions stating that it is an intelligent assistant capable of interacting with the Microsoft Learn MCP server. The MCP tool specification is added to the agent’s tools array. Once created, the agent is ready for use.
+
+We then create a conversation object to maintain contextual history between the user and the agent. Using this conversation ID, we submit the first user query: “Can you help me with the latest AI Foundry SDK code sample?”
+
+The agent responds with relevant code samples and provides official Microsoft Learn links. When we click one of these links, it opens the corresponding learn.microsoft.com documentation page, confirming that the MCP server integration is working correctly. This experience feels like a powerful, natural-language-driven search engine over Microsoft Learn.
+
+We then try another query: “Find me learning paths on Azure AI services for building intelligent applications.” The agent responds with multiple learning paths, including Get started with Azure AI, Develop generative AI apps in Azure, Develop natural language solutions in Azure, and Develop AI agents on Azure. Some of these learning paths include several modules and hours of content.
+
+To understand how this works internally, we examine the trace logs in the Foundry portal. For the first query, the agent first asks the MCP server to list all available tools. The MCP server responds with tools such as Microsoft Docs Search and Microsoft Code Sample Search.
+
+Since the first query was about code samples, the agent correctly invoked the Microsoft Code Sample Search tool. For the second query related to learning paths, the agent invoked the Microsoft Docs Search tool. In some cases, the agent invokes multiple tools to gather additional context before responding.
+
+Looking at token usage, the first query consumed approximately 8,382 tokens, while the second query used around 17,179 tokens. This high token usage occurs because the agent processes large amounts of information returned from Microsoft Learn, and also includes context from earlier conversation runs.
+
+In summary, this lab demonstrates MCP in action by integrating a public, unauthenticated Microsoft Learn MCP server with a Foundry agent. The agent can dynamically retrieve documentation, code samples, and learning paths using natural language queries. This concludes the lab on creating an agent with a remote MCP server, and with that, we can move on to the next set of videos.
+
 # **G) Creating a Multi-Tool Agent (Hands-On Lab)**
+
+In this video, we explore how multi-tool capability works in a Foundry agent. Until now, we have been working with tools in isolation, where each agent was created with only a single tool. What we want to understand now is what happens when an agent is provided with multiple tools. Specifically, we want to see whether the agent can understand the intent of a user query and dynamically derive an execution plan that routes different parts of the request to the appropriate tools.
+
+The goal is to observe whether the agent has an internal orchestration mechanism that decides which tool to use, in what order, and whether it should use one tool, multiple tools sequentially, or only a subset of the available tools depending on the user query. This is the key focus of the lab.
+
+To perform this lab, we work inside the multi-tool folder, which is located within the Agent Service parent folder. This folder contains three files: one file for setting environment variables, a second file containing the main codebase, and a third file that includes the OpenAPI definition of a weather API.
+
+In this lab, we aim to create a Foundry agent that has access to two tools. The first tool is the Microsoft Learn MCP server, and the second tool is the OpenAPI-based weather API that we explored in an earlier video. The same applies to the MCP server—if you have not already gone through the MCP server lab, it is recommended to review that video before proceeding.
+
+Once the agent is created with both tools, consider a user query such as: “Let me know the weather in Seattle and also find me a Microsoft Learn module on Microsoft Foundry.” When this query reaches the agent, the agent should split the intent. For the first part, it should invoke the OpenAPI weather tool with the location set to Seattle. For the second part, it should invoke a tool from the Microsoft Learn MCP server to search for relevant Microsoft Foundry learning modules on learn.microsoft.com.
+
+This allows us to observe the agent’s execution rollout and experience its internal orchestration capabilities. The agent dynamically determines which tools to invoke and how to combine their outputs into a single coherent response.
+
+Moving on to the environment variable file, the values for the Foundry project endpoint, model deployment name, and MCP server name are already filled in. The MCP server used here is the same one set up in the earlier MCP server lab. The remote MCP server endpoint is learn.microsoft.com/api/mcp, and it is an unauthenticated MCP server.
+
+The OpenAPI definition included in this folder makes a call to the weather API using a single endpoint, /location, which retrieves weather information for a specified location. Once the environment variables are verified and saved, we are ready to proceed with the lab.
+
+The first step in the code is to load the environment variables from the .env file and store them as Python variables, including the Foundry project endpoint, model deployment name, and MCP server name. Next, we create a Foundry project client, which connects the codebase to the Foundry project resource.
+
+After that, we initialize an OpenAI client, which will be used later to invoke the agent. We then move on to initializing the OpenAPI weather tool. This involves reading the OpenAPI specification JSON file, storing it as a Python variable, and creating the tool with its type set to openapi, name set to weather, and specification pointing to the loaded JSON content.
+
+Next, we need to initialize the MCP server connection. To do this, we list all the connections available in the Foundry project using the project client. When the connection name matches the MCP server name from the environment variables, we identify it as the correct MCP server and store its connection ID in a Python variable.
+
+With the connection ID available, we create the MCP tool specification. The server label is set to a descriptive name, the server URL is set to the MCP server’s remote endpoint, and the require_approval parameter is set to never so that the agent can autonomously execute MCP calls. The project connection ID is set to the MCP server connection ID obtained earlier.
+
+At this point, we create the agent with multiple tools. The agent is named Multi Tool Agent, and it is created using project_client.agents.create. The agent instructions specify that it is a helpful assistant capable of using multiple tools to answer user queries. In the tools array, we pass both the weather OpenAPI tool and the MCP tool, demonstrating how multiple tools are encapsulated within a single agent definition.
+
+Once the agent is created, we create a conversation object to maintain contextual conversation history between the user and the agent. We then invoke the agent with the user query: “Let me know the weather in Seattle and also find me a Microsoft Learn module on Microsoft Foundry.”
+
+For the first part of the query, the agent calls the weather API and returns the current weather in Seattle. The response indicates a temperature of 7°C, including both the actual and feels-like values. The weather condition is overcast, humidity is 82%, wind speed is 2 miles per hour from the south, pressure is 1028 pascals, visibility is 16 kilometers, and the UV index is set to zero.
+
+For the second part of the query, the agent retrieves information from the Microsoft Learn MCP server. It suggests a module titled “What is Microsoft Foundry”, provides highlights from the module, and includes links to the relevant Microsoft Learn content. This confirms that the agent successfully combined outputs from both tools into a single response.
+
+To understand how this worked internally, we navigate to the Foundry portal and inspect the trace stack. In the agent’s configuration, we can see that two tools are attached. In the traces view, we analyze the conversation ID associated with this run.
+
+The trace shows that the total token usage is around 17,000 tokens. First, the agent makes a call to the MCP server to retrieve the list of available tools. Then it invokes the Microsoft Docs Search tool to fetch learning modules from Microsoft Learn. Finally, it makes a remote function call to the OpenAPI weather tool to retrieve weather information for Seattle.
+
+In total, two function calls are made—one to the MCP server and one to the OpenAPI weather API. These calls are clearly visible in the trace stack, confirming the agent’s ability to orchestrate multiple tools dynamically.
+
+This concludes the demonstration of a multi-tool agent in action. With that, we wrap up this lab and move on to the next set of videos.
+
+# **H) Lab: Working with Browser Automation Tool (Hands-On Lab)**
+
+In this video, we work with the Browser Automation tool in a Microsoft Foundry agent. To perform this lab, we use the automation.ipynb Jupyter notebook. This notebook is located inside the browser automation folder, which itself resides within the agent service folder.
+
+Before executing any code in this notebook, we first need to configure a few required environment variables. These include the Foundry project endpoint, the model deployment name, and a value called the browser automation connection name. In order to use the browser automation tool inside our notebook, we must first create a corresponding browser automation connection in the Microsoft Foundry portal.
+
+To do that, we navigate to Portal.azure.com. The first thing we need to deploy is something called a Playwright Workspace in Azure. We search for Playwright Workspace in the Azure portal and select it. The reason we deploy this resource is because browser automation inside a Foundry agent relies on Playwright to simulate real browser interactions. This allows the agent to behave like a human user—opening a browser, clicking buttons, navigating pages, and extracting information.
+
+If we want to automate the process of navigating through a browser UI and retrieving information, the agent needs a sandboxed browser environment. The Playwright Workspace provides exactly that. It allows the agent to navigate through web pages, interact with UI elements based on instructions, and return the extracted information after completing those steps.
+
+Deploying a Playwright Workspace is straightforward. You simply click Create, choose a resource group, provide a workspace name, and proceed. A free trial is started automatically, which typically lasts around 14 days. Once the trial expires, the resource switches to a pay-as-you-go billing model. Importantly, you are billed only when the agent actively uses the Playwright Workspace. Pricing details can be reviewed using the Azure Pricing Calculator.
+
+In addition to browser automation, Playwright Workspaces are commonly used for automated software testing. For example, they can be used to test web applications or mobile apps by simulating UI interactions. This is an industry-standard use case documented in the Playwright Workspace documentation.
+
+Once the Playwright Workspace is deployed, navigating to its Overview section shows two important values: the API base endpoint and the browser endpoint. The browser endpoint is the one required to establish a connection between the Foundry agent and the browser automation tool.
+
+Next, we return to the Microsoft Foundry project. From there, we go to the Build section, and then to Tools, which is located just below the fine-tuning option. Here, we click on Connect Tool and select the browser automation tool from the configured tools list. We then click Add Tool.
+
+At this stage, we are prompted to provide a connection name. We create a new connection and name it Browser Automation Udemy Demo. This connection name is copied and stored in the environment variable file as the browser automation connection name.
+
+We then need to provide the Playwright Workspace browser endpoint, which we copy from the Playwright Workspace overview page. Additionally, the agent requires an access token to authenticate with the Playwright Workspace. To generate this, we go to Access Management under the Playwright Workspace settings and choose Playwright Service Access Token. We generate a new token, name it Udemy Demo Token, set an expiration period (for example, seven days), and generate it.
+
+The generated token is visible only once, so it must be copied immediately and stored securely. We paste this token into the access token field and click Connect, which completes the setup of the browser automation tool inside the Microsoft Foundry project.
+
+With the browser automation connection successfully created, we then return to the Foundry project home page. From there, we copy the project endpoint and update it in the environment variable file. We also specify the model deployment name, which in this case is a GPT-4 model that has already been deployed. After saving these changes, we are ready to run the notebook.
+
+We select the Python kernel in Jupyter and begin executing the notebook. The first step loads the environment variables, including the project endpoint, model deployment name, and browser automation connection name. Next, we create a Foundry project client using the project endpoint and Azure CLI credentials.
+
+After that, we create an OpenAI client, which is used to create a conversation and retrieve a conversation ID. This conversation ID is essential for maintaining the chat context between the user and the agent.
+
+Using the browser automation connection name, we iterate through all the connections available in the Foundry project by calling project_client.connections.list(). When the connection name matches the browser automation connection name defined in the environment variables, we store its connection ID in a Python variable. This confirms that we have successfully retrieved the browser automation tool connection ID.
+
+Next, we create a browser automation tool specification using this connection ID. From this specification, we construct a browser automation agent tool object, which will later be attached to our agent.
+
+We then create the agent itself. The agent is named Browser Automation Agent, uses the GPT-4 model, and is configured with the browser automation tool we created earlier. The agent’s instructions define it as a helpful assistant capable of automating web browser tasks using the browser automation tool.
+
+After that, we create a conversation object using the OpenAI client and retrieve the conversation ID. This conversation ID is used both for executing the agent and for later inspecting the agent’s execution stack in the Foundry portal.
+
+Next, we call the agent with a user query. When using browser automation, it is extremely important to be very specific in the instructions provided to the agent. The user query instructs the agent to report the year-to-date percentage change in Microsoft’s stock price. It explicitly describes each UI interaction step: navigating to finance.yahoo.com, using the search bar to search for Microsoft, clicking the YTD option on the stock chart, and extracting the percentage value displayed below it.
+
+This level of detail is critical when working with browser automation tools. Without precise instructions, the agent’s behavior may become unpredictable, leading to errors and a poor user experience. Controlling agent behavior is one of the biggest challenges developers face when building agentic systems.
+
+Once the query is submitted, the agent executes successfully. In the Microsoft Foundry portal, we can navigate to the agent, select the corresponding conversation ID, and view the execution trace. The agent initially failed on the first attempt, but succeeded when executed a second time. Execution latency is noticeable, often taking two to three minutes, which is an important consideration when designing workflows.
+
+Because of this latency, browser automation is best suited for long-running or background tasks that do not require immediate human interaction. In this case, the agent reports that the year-to-date percentage change for Microsoft stock, as shown on Yahoo Finance, is 14.3%.
+
+Looking at the agent execution stack, we can see that the agent analyzed the user query, invoked the browser automation tool, synthesized the response from the tool, and finally returned the result to the user.
+
+Additional queries were also tested. For example, asking the agent to search for Microsoft Foundry courses on Udemy. Although the browser automation tool was invoked, the agent encountered Cloudflare and CAPTCHA restrictions, preventing access to the search results. This highlights an important limitation: not all websites allow automated or bot-based access, especially sites protected by Cloudflare or CAPTCHA mechanisms.
+
+When building browser automation agents, it is essential to choose target websites that allow agentic access and browser automation. Otherwise, such restrictions can prevent successful execution.
+
+With that, this concludes the video demonstration of using the Browser Automation Tool with a Microsoft Foundry Agent. In the next set of videos, we move on to additional concepts and scenarios.
+
+# **I) Introduction to Foundry Memory Store**
+
+# **J) Lab: Assigning Azure Rule to Foundry for Memory Store Lab (Hands-On Lab)**
+
+# **K) Lab: Working with Foundry Memory Store (Hands-On Lab)**
