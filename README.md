@@ -706,6 +706,208 @@ With that, this concludes the video demonstration of using the Browser Automatio
 
 # **I) Introduction to Foundry Memory Store**
 
+Let’s now talk about one of the latest additions in Microsoft Foundry, which revolves around Memories and the memory store used in the agents that you build.
+
+To begin with, let’s understand the problem statement that led to the introduction of this feature. After speaking with many developers and reviewing multiple discussion forum threads, a common challenge emerged. Organizations and developers faced significant difficulties when building AI agents and pushing them to production, mainly due to the complexity of implementing a contextual memory store.
+
+Traditionally, developers had to set up external databases, such as NoSQL databases or external vector databases, to maintain agent memory. Every time a user session timed out, retrieving the contextual memory became complicated. Developers had to make multiple API calls to backend databases to reconstruct the context. This process was not only cumbersome but also inefficient.
+
+Another major issue was deciding how much memory should be retrieved and injected back into the agent’s context. Including the entire memory store in a new prompt is unnecessary and inefficient. Doing so significantly increases token usage, leading to higher costs and frequent encounters with token limits and rate restrictions. Hence, a more intelligent and token-efficient solution was required.
+
+These challenges collectively led to the advent of Memories in Microsoft Foundry. Earlier, retrieving agentic context across user sessions was a major headache. A built-in solution similar to Microsoft 365 Copilot’s memory system would clearly be beneficial.
+
+To relate this to a real-world example, consider Microsoft 365 Copilot. With an active Copilot license, if you navigate to the Copilot web experience and open the Settings page, you’ll find a Personalization tab. Within this tab, there is an option to enable or toggle Copilot Memory. When this feature is enabled, Copilot remembers important details from past conversations—even from weeks or months ago.
+
+This naturally raises the question: Can we implement a similar memory system in the AI agents we build?
+The answer is yes, and that’s exactly what the memory store in Microsoft Foundry solves.
+
+One of the most important things to understand is that you do not need to set up any external database to implement this memory store. Everything comes built-in—including vectorization logic, embedding generation, and retrieval mechanisms. From a developer’s perspective, all you need to do through code is handle how user input is sent to the memory store and how relevant memories are retrieved when needed.
+
+Additionally, within the Foundry portal, this feature can be enabled using a simple toggle button, making setup extremely straightforward.
+
+Conceptually, you can think of the memory store in Microsoft Foundry as a vector database that persists memory across user sessions. Let’s walk through an example to understand how this works.
+
+Suppose a user sends the following query to the agent:
+“I’m allergic to dairy. Show me a recipe for cake.”
+
+Here, the user expects the agent to remember a personal attribute—being allergic to dairy or lactose intolerant. This query is sent to the agent, but it is also processed by the memory store, which contains an LLM-powered component.
+
+This large language model within the memory store analyzes the incoming query and intelligently identifies what information is worth storing. Importantly, the entire user query is not stored. Instead, the LLM selectively extracts only the relevant, long-term memory-worthy information—in this case, “allergic to dairy.” This approach ensures that the memory store remains token-efficient.
+
+Even though the original query may be large, only a concise, meaningful statement is stored in memory.
+
+Now, imagine that a few weeks later, the same user returns and asks:
+“What are some good snacks for my party tomorrow?”
+
+In this query, the user does not explicitly mention their dairy allergy. However, because this information already exists in the memory store, the agent retrieves it and factors it into the response. As a result, the agent suggests dairy-free snacks, providing a more personalized and context-aware answer.
+
+So how does this retrieval mechanism actually work?
+
+Each memory stored consists of two components:
+
+Textual content (e.g., “allergic to dairy”)
+
+Vector embedding of that content
+
+When a new user query comes in, vector embeddings are generated for the query as well. These embeddings are then compared against the embeddings stored in the memory store using similarity search. Based on configuration, the system retrieves the top-K most relevant memory chunks—for example, the top 3 or top 5.
+
+These retrieved memory chunks are then appended to the final prompt sent to the agent. They serve as grounding context, enabling the agent to take personal user attributes into account when generating a response.
+
+Microsoft published a study on this approach, which included two industry-standard tests (referred to as Test 1 and Test 2). The results showed that when memory stores were used, accuracy increased by approximately three times.
+
+The study also compared results using GPT-4.1 Mini and GPT-4.1. While both models showed improved accuracy with memory enabled, GPT-4.1 performed significantly better. The key takeaway here is that larger reasoning models benefit more from memory stores. Better reasoning capabilities allow the model to more accurately determine which topics should be stored and retrieved, leading to higher overall accuracy.
+
+Finally, let’s discuss the current limitations and quotas of the memory store, as of 12th December 2025.
+
+At present, memory stores work only with Azure OpenAI models. Additionally, you must explicitly set a scope value. The scope value acts like a unique identifier—similar to a primary key in a database. For example, if you are storing user-specific memories, the scope could be the user’s name or user ID. Each scope represents an independent memory store.
+
+Since the feature is currently in preview, the following limits apply:
+
+Maximum number of scopes per memory store: 100
+
+Maximum memories per scope: 10,000
+
+Memory search (retrieval) limit: 1,000 requests per minute
+
+Memory update (write) limit: 1,000 requests per minute
+
+These quotas are critical to consider when designing solutions that need to scale.
+
+In summary, memory stores in Microsoft Foundry are one of the most advanced and much-needed additions to the ecosystem. They eliminate the need for external databases, simplify contextual memory management, improve personalization, and significantly enhance agent accuracy.
+
+With that, we’ve covered everything about memory stores in Microsoft Foundry.
+Without further ado, let’s move on to the next set of videos.
+
 # **J) Lab: Assigning Azure Rule to Foundry for Memory Store Lab (Hands-On Lab)**
 
+Before we begin with the Foundry Memory Store lab, there are a few mandatory administrative steps that need to be completed in portal.azure.com.
+
+Whenever you create a Foundry Memory Store, the identity of your Foundry project must be granted the Azure AI User role on the parent resource in the Azure portal. This step is critical for the memory store to function correctly.
+
+The reason for this requirement is that the Foundry Memory Store has two core components. The first component is a large language model, which is responsible for identifying and extracting the relevant topics from user queries that should be stored as memories. The second component is the embedding model, which generates vector embeddings for those topics so they can be stored and retrieved efficiently from the memory store.
+
+For your Foundry project—and the Foundry client that you will create via code—to access these OpenAI models (both the large language model and the embedding model), the project’s managed identity must have the Azure AI User role. This role needs to be assigned at the level of the resource that hosts the OpenAI models, which typically means the resource group containing the AI service account in the backend.
+
+Granting this role ensures that the Foundry project has permission to interact with both the LLM and embedding models. Without this role assignment, the memory store will not be able to function correctly.
+
+To begin, navigate to portal.azure.com and search for Microsoft Foundry in the search bar. Once selected, you will land on the Foundry overview page.
+
+From here, you need to determine which AI service account hosts the project for which you intend to create the memory store. To do this, open the Foundry portal, select the project you are currently working on, and then click on View all projects.
+
+Once inside the project details, you will see information indicating the parent resource associated with the project. In this example, the parent resource is named something like carbon-ops-dev-ai followed by numeric characters. This parent resource is what hosts the OpenAI models.
+
+The next step is to assign the Azure AI User role to the managed identity that was automatically created for this Foundry project, and to assign it on top of the parent resource. This ensures that the project can access the OpenAI and embedding models hosted by that resource.
+
+Now, return to the Foundry view in portal.azure.com and select the identified parent resource. From there, navigate to the Projects section, where you will see the demo project that you are working with.
+
+Click on the project to open the project pane. Inside the project pane, go to Resource Management, and then select Identity. This is where you configure roles and administrative permissions for the project.
+
+You will notice that the project already has a system-assigned managed identity. This identity is automatically created by Azure when a Foundry project is created within a parent resource. The Object ID or Principal ID shown here uniquely identifies this managed identity.
+
+Next, click on Azure Role Assignments, as we want to attach a new role to this identity. You may already see the Azure AI User role assigned if it was previously configured for testing, but the process remains the same.
+
+Since both the Foundry project and the parent AI resource reside in the same resource group, assigning the Azure AI User role at the resource group level is sufficient. Doing so automatically grants the project access to the parent resource.
+
+To add the role, click on Add Role Assignment. Set the Scope to Resource Group, and then select the resource group where both the Foundry project and the parent AI resource exist. In this case, the resource group is carbon-ops-dev.
+
+Next, select the Role by searching for Azure AI User. Once you locate the role, select it and click Save.
+
+This action assigns the Azure AI User role to the project’s managed identity at the resource group level. As a result, the Foundry project now has permission to access the OpenAI models hosted within the parent resource.
+
+Once this configuration is complete, you will be able to successfully run the Foundry Memory Store lab. If this step is skipped, you will encounter unauthenticated or authorization errors when executing the code. This is a common bottleneck and one of the most frequent causes of issues when setting up memory stores.
+
+That’s all for this section.
+With the administrative setup complete, let’s move on to the next set of videos.
+
 # **K) Lab: Working with Foundry Memory Store (Hands-On Lab)**
+
+Alright, in this video we’ll be working hands-on with the Foundry Memory Store. To perform this lab, I’m using the memory_store.ipynb Python notebook. This notebook is located inside the memories folder, which itself resides under the Agent Service parent folder.
+
+Before running the notebook, the first thing we need to do is review and set the required environment variables. We need to configure the Foundry project endpoint, along with the model deployment name and the embedding model name. I’ve already set these values in my .env file.
+
+For this lab, I’m using the GPT-4.1 model as the language model and text-embedding-3-small as the embedding model. If you haven’t deployed these models yet, you can do so from the AI Foundry portal. Simply navigate to the Models section, click on Deploy a base model, search for GPT-4.1, and deploy it using the default settings. Then repeat the same process for text-embedding-3-small, again using default values.
+
+Once deployed, you’ll be able to see both models listed in the portal—GPT-4.1 for reasoning and text-embedding-3-small for embeddings. With that setup complete, we’re ready to begin working with the notebook.
+
+The first step in the notebook is setting up the environment. We load the Foundry project endpoint, the model deployment name, and the embedding model name from the .env file. After that, we create the Foundry project client using the project endpoint along with the default Azure credential, which is picked up from the Azure CLI.
+
+This is where the core work begins: defining the memory store. The Azure AI Projects SDK provides a built-in way to define memory stores using the memory store default definition and memory store default options objects.
+
+As discussed earlier, the memory store has two major components. The first is the language model (LM) component, which uses its natural language processing capabilities to analyze incoming user queries and identify the most relevant topics or phrases that should be stored as memories. We intentionally avoid storing the entire user query, as that would lead to token exhaustion and could introduce unnecessary noise during memory retrieval.
+
+In this lab, the LM component of the memory store is powered by GPT-4.1. If you’re using a different model, the one defined in your .env file will be used instead.
+
+The second component is the embedding model, which is crucial because the memory store functions like a vector database. Each memory consists of both text and vector embeddings. These embeddings are later used during retrieval to identify the most relevant memory chunks that will form the grounding knowledge for the agent. In this case, the embedding model used is text-embedding-3-small.
+
+In the memory store options, both user profile and chat summary are set to true. This allows the system to summarize conversations and store information in a more token-efficient manner.
+
+Once the definition is ready, we use the Foundry project client to create the memory store. We name it “Udemy Demo MemoryStore v1” and provide a description stating that it is used to retain user context across sessions. The description is purely informational and intended for developers; it does not affect how the agent uses the memory store.
+
+With that, the memory store is successfully created.
+
+Next, we define a function to update the memory store. The idea is that during an ongoing chat loop, every time a user sends a message, this function will be invoked to update the memory store with any new relevant information.
+
+This function takes three inputs:
+
+The memory store name, to identify which store to update
+
+The username, which is used as the scope
+
+The user message, which is the incoming query or information
+
+The scope works like a unique identifier in a database. Each user gets their own independent set of memories within the parent memory store.
+
+Inside the function, we create an object of type ResponsesUserMessageItemParam, which is required to pass user input into the memory store. We then use the project client to begin the memory update operation, providing the memory store name, the scope (username), and the user message.
+
+Since memory updates involve multiple steps—topic extraction by the LLM and embedding generation—we use a poller to wait for the operation to complete. Once finished, the function returns a success message. If any exception occurs, it returns an update-failed message.
+
+To see this in action, we invoke the function with the scope set to “kujo” and provide the user message:
+“My name is Kujo Singh. I love programming in Python. I’m also allergic to peanuts and dairy.”
+
+As a result, the memory store is updated with multiple memory chunks. These include:
+
+User’s name
+
+User loves programming in Python
+
+User is allergic to peanuts
+
+User is allergic to dairy
+
+A combined summary memory capturing these details
+
+Each of these is stored as a separate chunk with its own memory ID under the specified scope.
+
+Next, we move on to creating an agent in the Foundry Agent Service. Until now, we’ve only created the memory store and verified that memory updates work correctly. Now, we’ll bring everything together by creating an agent that actively uses the memory store as contextual grounding.
+
+We create an agent named “Helpful Assistant Agent”, using the Foundry project client. This is version one of the agent. The agent is based on the GPT-4.1 model, with instructions to behave as a helpful assistant that responds in a friendly and informative manner.
+
+After that, we build a chat system to demonstrate memory usage in real time. This part involves more plumbing code, so I’ll explain the logic at a high level.
+
+The chat loop runs continuously until the user types exit. If the user types update, they are prompted to enter information they want the agent to remember. That input is then passed to the memory update function.
+
+If the user simply asks a question, we first create an OpenAI client and request a conversation ID. Before sending the query to the agent, we perform a search operation on the memory store.
+
+The user query is converted into a ResponsesUserMessageItemParam object, which is used to perform a retrieval operation. We call search_memories, passing the memory store name, the scope (username), the query item, and retrieval options.
+
+The max_memories value is set to 5, meaning the top five most relevant memory chunks for that user and query will be retrieved. These memory chunks are appended to the final prompt as grounding context before sending the request to the agent.
+
+Now let’s see this in action. The memory store already contains the facts that the user loves Python and is allergic to peanuts and dairy. When we ask, “Can you tell me some quick snack recipes?”, the agent retrieves the relevant memory chunks and responds with peanut-free and dairy-free snack ideas, even though those allergies were not explicitly mentioned in the question.
+
+Similarly, when asked, “Give me code to calculate the factorial of a number in my favorite programming language,” the agent correctly responds with Python code, based on the stored memory that Python is the user’s preferred language.
+
+Next, we update the memory again by adding:
+“My favorite comic star is Batman.”
+
+After the memory store updates, we ask, “Can you tell me some qualities about my favorite comic star?” The agent retrieves the stored memory and responds with a detailed list of Batman’s qualities.
+
+Typing exit ends the chat loop.
+
+Finally, we switch to the Foundry portal and navigate to the Agent section. Selecting the Helpful Assistant Agent, we open the Memories option and attach the Udemy Demo Memory Store directly to the agent. We enable memory access, set the scope, and save the agent, creating version two.
+
+Now, when interacting with the agent directly—without any custom plumbing code—it can still recall personal details such as favorite comic star or allergies. This approach reduces code complexity but gives you less control over when memories are stored or retrieved, as those behaviors are abstracted away.
+
+That’s the trade-off to consider.
+
+And with that, we’ve seen the Foundry Memory Store fully in action, both programmatically and through the portal.
+That wraps up this section—let’s move on to the next set of videos.
