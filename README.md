@@ -61,6 +61,26 @@ This Repository contains my "Microsoft Foundry: AI Agents, Foundry IQ, MCP &amp;
 
 **G) Lab: Creating the Multi-Modal RAG Agent (Hands-On Lab)**
 
+**(V) API Management and AI Gateway**
+
+**A) API Management as API Gateway in Foundry**
+
+**B) MCP (Model Context Protocol) - Deep Dive**
+
+**C) MCP Server Architecture**
+
+**D) API Management and MCP Servers: Solution Architect's POV**
+
+**E) Lab: Creating an AI Gateway in Foundry Project (Hands-On Lab)**
+
+**F) Lab: Capabilities of AI Gateway (Hands-On Lab)**
+
+**G) Lab: Creating Our Own MCP Server in ACA (Hands-On Lab)**
+
+**H) Lab: Adding Our MCP Server to AI Gateway (Hands-On Lab)**
+
+**I) Lab: Testing Rate Limiting Policy (Hands-On Lab)**
+
 
 
 
@@ -1184,3 +1204,79 @@ In the Traces section, using the same conversation ID, we can see both interacti
 Similarly, for the second query, the token count is 1534, and the trace shows the remote call made to Azure AI Search, followed by the agent synthesizing the final response.
 
 And with that, we’ve successfully seen the Azure AI Search–powered multimodal RAG agent in action—from infrastructure setup to live querying, source tracing, and execution monitoring.
+
+# **(V) API Management and AI Gateway**
+
+# **A) API Management as API Gateway in Foundry**
+
+Azure API Management (APIM) plays a critical role as the API gateway within Microsoft Foundry, and to understand its importance, it helps to first look at what Azure API Management is and why it exists. For many people, APIM is a relatively new Azure resource, but it addresses a set of long-standing challenges around API governance, security, lifecycle management, and developer enablement. In today’s technology landscape—especially in the era of AI agents—organizations are increasingly realizing that achieving a strong return on investment requires agents to perform real business logic. To do that effectively, agents must connect to enterprise knowledge and perform operations, and APIs are the primary mechanism that enables this connection.
+
+APIs have been a foundational part of enterprise architectures since the early web era. They act as the connective layer between an organization’s services and data layer and the connected experiences that consume them. These connected experiences can include web applications, mobile apps, IoT devices, SaaS solutions, and now AI agents. APIs expose enterprise data and services in a programmatic, retrievable way, allowing different systems and experiences to interact in a controlled and scalable manner.
+
+Managing APIs, however, involves addressing the needs of two distinct groups: publishers and developers. Publishers are responsible for building, maintaining, securing, and governing APIs, while developers consume these APIs to build applications and solutions. Publishers face challenges such as abstracting API development, securing and protecting APIs, managing the full API lifecycle from design through production, monitoring usage and performance, onboarding developers, and potentially monetizing APIs. Developers, on the other hand, struggle with discovering APIs, understanding endpoints, parameters, and methods, onboarding quickly, and accessing SDKs and documentation that help them integrate APIs efficiently.
+
+API Management gateways exist to solve these challenges for both publishers and developers. While there are open-source and cloud-native API management solutions available across platforms like AWS and GCP, Azure provides a purpose-built solution in the form of Azure API Management. An APIM instance includes a developer portal where developers can sign in, discover APIs, subscribe to them, and consume them under different pricing or usage tiers. At the same time, APIM sits between the API consumer and the backend API, enforcing policies such as rate limiting, authentication, governance, and transformation, effectively mediating all interactions.
+
+Publishers benefit from access to a publishing portal where they can manage the API lifecycle, apply policies, monitor usage, and define subscription and pricing tiers. This enables API monetization in consumer-facing scenarios or controlled internal consumption in line-of-business applications. From an enterprise standpoint, APIM provides centralized governance over APIs while simplifying developer onboarding and consumption.
+
+Azure API Management is a mature and widely adopted platform. Microsoft was named a leader in the 2021 Gartner Magic Quadrant for full lifecycle API management. According to Microsoft’s statistics, APIM mediates approximately 4.65 trillion API calls per year with an 87% year-on-year growth rate. Around 840,000 APIs are managed through APIM, representing 72% year-on-year growth, and over 18,000 customers—including enterprises like Accenture, Mercedes-Benz, AccuWeather, Alaska Airlines, Mastercard, and Rockefeller—use the service across 54 regions worldwide.
+
+When deploying Azure API Management, there are two broad pricing categories: the Consumption tier and the Developer, Basic, Standard, and Premium tiers. The Consumption tier requires no infrastructure provisioning, supports built-in autoscaling down to zero, operates with a shared management plane, and has no reserved capacity. In contrast, the other tiers provide dedicated management and data planes, reserved capacity, higher service-level agreements, and more control over scaling. For production workloads, organizations typically choose Basic, Standard, or Premium tiers depending on SLA and feature requirements.
+
+Azure API Management supports the entire API lifecycle. APIs can be designed using OpenAPI specifications, developed using tools such as Visual Studio Code, and exposed as SOAP, REST, GraphQL, WebSocket, or other API types. Once developed, APIs can be secured using over 50 pre-built policies, including rate limiting, throttling, authentication, and authorization. Policies can validate subscription keys, enforce JWT validation, integrate with Azure Active Directory and managed identities, and control access at a granular level. APIs can then be published with defined subscription tiers and pricing models.
+
+Beyond security and governance, APIM supports advanced operational capabilities such as circuit breaker patterns, fault tolerance, and regional failover. Integration with Azure Monitor, Application Insights, Log Analytics, and Azure Alerts allows organizations to collect logs, metrics, traces, and performance data. This data can be analyzed using Log Analytics queries or visualized in Power BI dashboards to provide stakeholders with insights into API usage, performance, errors, and cost.
+
+APIM policies are a key differentiator. Organizations can implement rate limiting per subscription or key, restrict access by IP address, validate JWTs and identities, transform requests and responses (such as JSON to XML or vice versa), apply caching, enable cross-domain policies, and enforce schema validation. These policies are templated and can be applied with minimal configuration. APIM also supports Dapr integration for microservices running on Azure Kubernetes Service or Azure Container Apps.
+
+Importantly, Azure API Management has expanded to support generative AI scenarios. Within the APIM publishing portal, there is native support for Azure OpenAI Service and Azure AI Foundry, now renamed Microsoft Foundry. In this architecture, APIM acts as the API gateway for agents and the tools they consume. Agents may be deployed as containerized workloads on AKS, Azure Container Apps, or exposed via web applications. These agents often rely on underlying APIs, plugins, or MCP servers to perform tasks.
+
+APIM enables organizations to govern both access to the agents themselves and the internal APIs, plugins, and MCP servers that agents use. All standard API policies—such as authentication, rate limiting, monitoring, and transformation—can be applied uniformly. This allows enterprises to mediate interactions between users and agents, as well as between agents and their underlying tools, using a single centralized gateway.
+
+For generative AI workloads, APIM supports advanced patterns such as load-balanced circuit breakers that route requests to alternate agent instances or regions if failures occur. It enables authentication and authorization before users can access agents, semantic caching to serve repeated queries faster and reduce token consumption, throttling and rate limiting to prevent abuse or denial-of-service scenarios, managed identity authentication via Microsoft Entra ID, continuous deployment, and API monetization through subscription tiers.
+
+From a solutions architect’s perspective, Azure API Management fills a critical gap within Microsoft Foundry. While Foundry addresses enterprise concerns around network isolation, identity, access control, and data protection, APIM complements it by solving policy enforcement, monitoring, governance, and cost control. By applying fine-grained rate limits, throttling, and usage controls, organizations gain visibility into token consumption and operational costs while maintaining control over how agents and APIs are used.
+
+In summary, Azure API Management serves as the API gateway layer within the Microsoft Foundry ecosystem, governing interactions between users, agents, and the underlying APIs and tools those agents depend on. It enables enterprises to secure, monitor, scale, and monetize APIs and AI agents in a consistent and production-ready manner, making it a foundational component of modern AI-driven architectures.
+
+# **B) MCP (Model Context Protocol) - Deep Dive**
+
+In this video, the goal is to understand what the Model Context Protocol (MCP) is from a high-level perspective. MCP has become a major buzzword in the AI agent ecosystem, and before diving into the technical details in later videos, it’s important to understand the fundamental problem it is trying to solve and where it fits into the architecture of AI agents.
+
+To understand MCP, we first need to look at how generative AI applications evolved. When ChatGPT initially gained popularity around 2023, most generative AI applications were simple chatbots. These chatbots were conversational but not autonomous. You couldn’t instruct them to perform real-world actions like booking a flight from India to the US. Today, however, chatbots and AI agents are capable of performing such tasks, and the key enabler behind this autonomy is the use of tools or plugins. These plugins allow agents to interact with external APIs. For example, when you ask a chatbot to book a flight, it sends a POST request to a flight service provider’s API in the background. This ability to interact with APIs is what makes modern agents autonomous.
+
+However, there is a major bottleneck in how these plugins are implemented today. To enable an agent to call an API, developers typically hardcode the API logic into their application. A common example is attaching a function to a foundational model like GPT-4.1. This function acts as a plugin that gives the model permission to call an API in real time. For instance, a chatbot might be given a function called get_weather, which retrieves real-time weather information for a location. The function definition specifies the function name, its description, and the parameters it accepts—such as a location string. When the model decides that this function is relevant, it dynamically fills in the parameter and executes the corresponding backend code.
+
+Behind the scenes, this usually involves custom code written by the application developer. In the weather example, a Python function accepts the location parameter, calls one API to fetch latitude and longitude for that location, constructs a second API call using those coordinates, and then makes a GET request to retrieve the weather data. When a user asks for the weather in London, the model identifies that the get_weather function should be invoked, fills in the location parameter, executes the custom Python code, and returns the real-time weather information to the user.
+
+The problem with this approach is that the application developer is not the API provider. If the API provider changes the endpoint URL, modifies query parameters, alters payload structures, or deprecates a method, the application breaks. The developer then has to react—often urgently—by reading updated documentation, rewriting code, and redeploying fixes, sometimes in the middle of the night. This is particularly problematic for business-critical applications where downtime is unacceptable. There is no strong contract between the API provider and the application developer, and any breaking change on the provider side directly impacts the agent.
+
+This is exactly the problem that Model Context Protocol is designed to solve. MCP aims to remove the burden of maintaining brittle, boilerplate integration code from application developers and shift that responsibility back to the API developers themselves. With MCP, the API developer not only maintains the API but also provides an MCP server. Instead of an AI agent connecting to custom integration code written by the application developer, the agent connects directly to the MCP server. If the API provider changes URLs, query parameters, or request structures, they update the MCP server accordingly. The agent continues to work without requiring any changes to the application code.
+
+From the application developer’s perspective, this means no custom integration code is needed at all—not even a single line. The agent simply connects to the MCP server, and the server abstracts away all API changes and complexities. This makes MCP a powerful abstraction layer and a standardized contract between API providers and AI application developers.
+
+MCP can be thought of as a universal interface for AI agents—similar to how USB-C acts as a universal connector for hardware devices. A single chatbot can connect to multiple MCP servers, each exposing a different capability. For example, an agent can connect to a GitHub MCP server to access repositories, a MongoDB MCP server to query a database, a Slack MCP server to send messages, or a Gmail MCP server to read and send emails. MCP servers are already available or emerging for platforms such as GitHub, Gmail, Slack, Microsoft Learn, PayPal, Stripe, and other web and financial services, often with strong security controls.
+
+MCP servers come in two main types: remote and local. Remote MCP servers are hosted and maintained by external providers and are accessed over the internet. For example, a Gmail MCP server would be deployed and maintained by Google. An AI agent connects to it using network protocols such as HTTP and server-sent events. Local MCP servers, on the other hand, run on the same machine as the AI application. These do not require internet calls and instead communicate using standard input/output mechanisms on the local host. A common example of a local MCP server is one that allows an agent to analyze and query files on the user’s local file system, keeping data private and confined to the user’s device.
+
+At a high level, MCP follows a client–server architecture. The AI application or agent acts as the MCP client, while the MCP server exposes structured capabilities and context. This architecture allows developers to build reusable, modular connectors and attach them to agents with minimal effort.
+
+To simplify everything with a real-life example, consider building a chatbot that acts like a personal Google Assistant. Without MCP, the developer would need to hardcode Gmail API calls to access inbox emails, sent items, and other data. If Google later updates the Gmail API—even slightly—the application risks breaking, and the developer must manually update the integration. With MCP, the developer simply connects the chatbot to the Gmail MCP server maintained by Google. All custom integration code is replaced by a single connection to the MCP server, and API changes are handled entirely by the API provider.
+
+Despite its promise, MCP is still in its early stages. From both a development and security perspective, the ecosystem is still maturing. This is similar to the early days of large language models and AI agents, when issues like prompt injection attacks were not fully understood, and tools like Azure Content Safety emerged only later. MCP adoption is growing rapidly because it simplifies integration and introduces a standardized protocol, but it still lacks deep abstraction and requires strong coding skills to implement MCP servers effectively. As a result, MCP is currently better suited for pro-code developers rather than low-code users.
+
+That said, MCP represents a significant step toward standardization and reliability in AI agent integrations. It establishes a clear contract between API providers and application developers, reduces operational risk, and simplifies long-term maintenance. This video provides a high-level introduction to MCP as a concept and as a solution to a widespread problem in the AI agent world. In the next set of videos, the focus will shift to exploring MCP in greater technical depth.
+
+# **C) MCP Server Architecture**
+
+# **D) API Management and MCP Servers: Solution Architect's POV**
+
+# **E) Lab: Creating an AI Gateway in Foundry Project (Hands-On Lab)**
+
+# **F) Lab: Capabilities of AI Gateway (Hands-On Lab)**
+
+# **G) Lab: Creating Our Own MCP Server in ACA (Hands-On Lab)**
+
+# **H) Lab: Adding Our MCP Server to AI Gateway (Hands-On Lab)**
+
+# **I) Lab: Testing Rate Limiting Policy (Hands-On Lab)**
