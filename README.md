@@ -1335,6 +1335,75 @@ In summary, this video focused on understanding the integration of MCP servers w
 
 # **E) Lab: Creating an AI Gateway in Foundry Project (Hands-On Lab)**
 
+With this video, we will set up an AI Gateway in our Microsoft Foundry project. Before getting started, there is an important disclaimer. The AI Gateway feature is not available in all regions. I realized that it was not supported in the Sweden Central region, so I created a new Microsoft Foundry project in the East US region instead. The project is named “Foundry Demo East US”, and everything works perfectly there.
+So before following along, make sure to check region compatibility and choose a supported region.
+
+To begin, navigate to the Update section in Foundry. From there, go to Operate, and then open the Admin section. Inside Admin, you will see an option labeled AI Gateway. Click on it, and then select Add AI Gateway.
+
+Next, you are asked to select the Foundry resource. In this case, I select Foundry Demo Project and choose to create a new AI Gateway. One important thing to note here is that the AI Gateway is free for the first 100,000 API requests. There is also a Pricing Details link available, which you can use to review the cost structure.
+
+From the pricing information, you can see that:
+
+The Basic tier costs around $150 per month
+
+The Standard tier is approximately $700 per month
+
+The Premium tier is about $3,000 per month
+
+These prices are not cheap, but they make sense when you consider the return on investment. At scale, the AI Gateway helps you govern agents, APIs, and the entire AI ecosystem, which becomes critical in enterprise environments.
+
+Once pricing is reviewed, we provide a name for the gateway. I name it “Foundry Gateway Demo”, and then click on Add. After this step completes, you can see that the AI Gateway has been successfully created.
+
+When you open the gateway details, you can observe several important properties. It is using the Basic V2 pricing tier, which includes 100,000 free API requests, after which billing starts at $150 per month. You can also see the endpoint and the project name associated with this AI Gateway.
+
+Now, let’s take a look at what happens behind the scenes. If you go to the Azure Portal and search for API Management, you will notice that an API Management instance has been automatically deployed with the same name as the AI Gateway. This confirms that the AI Gateway is built on top of Azure API Management.
+
+Taking a quick walkthrough of the API Management instance, you’ll notice the API portal, which allows you to perform administrative tasks such as:
+
+Governing agent-to-agent compatible agents
+
+Bringing in large language models, including OpenAI models, as APIs
+
+Defining rate limiting, throttling, and authentication policies
+
+This setup is not limited to generative AI alone. If you already have existing HTTP REST APIs, you can bring them into API Management as well. Additionally, you can create and manage:
+
+WebSocket APIs
+
+GraphQL APIs
+
+APIs from OpenAPI definitions
+
+APIs defined using XML
+
+SOAP APIs
+
+OData APIs
+
+If your backend APIs are hosted in Azure App Service, Azure Functions, Container Apps, or Logic Apps, you can directly bring them under the API Management governance boundary.
+
+There is also a dedicated MCP Server section. This allows you to manage MCP servers under API Management. When creating an MCP server, you have two options:
+
+Expose an existing MCP server hosted elsewhere
+
+Convert an existing HTTP REST API into an MCP server without writing additional code
+
+This is an extremely powerful feature. Many organizations have invested heavily in HTTP REST APIs over the years, and being able to convert them into MCP servers quickly means they can modernize their architecture without rewriting everything from scratch.
+
+On the left-hand side of the API Management interface, you’ll also see Products and Subscriptions. These are used for monetizing APIs. You can bundle APIs into products such as Bronze, Silver, or Platinum tiers. Consumers purchase access to a product, receive a subscription, and authenticate using a primary and secondary access key. These keys are then used to securely call the underlying APIs.
+
+This is essentially how everything works under the hood.
+
+With that, we’ve successfully:
+
+Created an AI Gateway in our Foundry project
+
+Understood the pricing model
+
+Explored the API Management instance that gets deployed automatically
+
+Reviewed governance, MCP servers, and API monetization concepts
+
 # **F) Lab: Capabilities of AI Gateway (Hands-On Lab)**
 
 # **G) Lab: Creating Our Own MCP Server in ACA (Hands-On Lab)**
