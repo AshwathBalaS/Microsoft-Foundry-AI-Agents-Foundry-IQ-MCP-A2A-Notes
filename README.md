@@ -81,6 +81,20 @@ This Repository contains my "Microsoft Foundry: AI Agents, Foundry IQ, MCP &amp;
 
 **I) Lab: Testing Rate Limiting Policy (Hands-On Lab)**
 
+**VI) Foundry IQ**
+
+**A) Introduction to Foundry IQ**
+
+**B) Understanding Agentic Retrieval in Foundry IQ**
+
+**C) Understanding BM25 Ranking and Semantic Re-Ranking in AI Search**
+
+**D) Lab: Setting Up Foundry IQ Knowledge Base and Sources (Hands-On Lab)**
+
+**E) Lab: Creating Foundry IQ Agent via the Portal (Hands-On Lab)**
+
+**F) Lab: Creating Foundry IQ Agent via Python Notebook (Hands-On Lab)**
+
 
 
 
@@ -1626,3 +1640,17 @@ The next step is to apply a rate-limiting policy to the MCP server. I navigate b
 To test rate limiting, I rerun the query “Can you tell me something about the recipe with ID six?”. On the first run itself, an error occurs indicating that the threshold has been exceeded. This happens because the agent makes multiple backend API calls per single query—for example, calls to list tools, invoke the function, fetch the response, and requery tool metadata. Therefore, even a seemingly low threshold can be exhausted quickly. It is important to experiment with and fine-tune the rate-limiting value according to your business use case, which may require values like 15 or 25 depending on the expected load.
 
 This video demonstrated how to bring your own MCP server under the API Management governance layer, integrate it with an agent, and apply a rate-limiting policy to control usage. These steps provide a robust way to securely expose your MCP server for controlled access while enabling experimentation and governance.
+
+# **VI) Foundry IQ**
+
+# **A) Introduction to Foundry IQ**
+
+# **B) Understanding Agentic Retrieval in Foundry IQ**
+
+# **C) Understanding BM25 Ranking and Semantic Re-Ranking in AI Search**
+
+# **D) Lab: Setting Up Foundry IQ Knowledge Base and Sources (Hands-On Lab)**
+
+# **E) Lab: Creating Foundry IQ Agent via the Portal (Hands-On Lab)**
+
+# **F) Lab: Creating Foundry IQ Agent via Python Notebook (Hands-On Lab)**
