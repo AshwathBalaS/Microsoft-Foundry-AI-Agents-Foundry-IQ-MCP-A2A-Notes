@@ -2060,4 +2060,45 @@ This concludes the demonstration of PII text redaction using Azure Language Serv
 
 # **D) Introduction to Azure Document Intelligence**
 
+Now let’s take a look at another state-of-the-art predictive AI service offering from Microsoft, which is Azure Document Intelligence.
+
+Earlier, Azure Document Intelligence was known as Form Recognizer. This service provides pre-built models that help process, analyze, and extract information from documents such as invoices, receipts, and government-issued IDs. In addition to these pre-built models, Azure Document Intelligence also allows you to build custom models to process and analyze custom document types.
+
+One of the biggest advantages of this service is that you don’t have to build everything from scratch. You don’t need to decide which algorithm to use or worry about complex model design. There’s no need to be scared or overwhelmed. All you need to do is provide your custom dataset, provision the required infrastructure, and with just a few button clicks, your custom model can be trained on that dataset.
+
+Along with custom models, Azure Document Intelligence also comes with out-of-the-box pre-built offerings, such as models for invoices, receipts, and government IDs. These are the models we’ll be working with when we move on to the hands-on lab.
+
+The most important point to understand about Azure Document Intelligence is that it preserves the layout of the entire document—whether it’s an invoice, a receipt, or any other document. This means it doesn’t just extract text; it also understands where the text is located within the document.
+
+To explain this, consider the example where we provide a visiting card belonging to a person named Chris Smith, who is a Senior Researcher in the Cloud and AI department at Contoso. Azure Document Intelligence first performs Optical Character Recognition (OCR) to identify where text exists within the document.
+
+Once the text is detected, the service constructs bounding boxes around each identified text field. For example, it creates bounding boxes around text such as Contoso, Chris Smith, Senior Researcher, and Cloud and AI Department. By doing this, the service is able to preserve the overall structure and layout of the document.
+
+Because of these bounding boxes, Azure Document Intelligence understands not just the content but also the spatial relationship between different pieces of information. With a simple API call, all of this extracted information is returned as a JSON response. This response includes details such as company name, contact names, job titles, departments, email addresses, websites, mobile numbers, other phone numbers, physical addresses, and fax numbers.
+
+This entire extraction is done using the pre-built layout or template models that Azure Document Intelligence provides. On the right-hand side of the screen, you can also see what the JSON response looks like. Each extracted entity includes the type (for example, string or number), the actual value (such as “Contoso”), and the bounding box coordinates represented using x and y values.
+
+These coordinates help preserve the document’s layout, and the response also includes a confidence score. The confidence score tells you how confident the model is about the extracted information. This is an extremely valuable feature, especially when working in highly regulated environments, where accuracy and reliability are critical.
+
+Unlike generative AI models, predictive AI services like Azure Document Intelligence consistently provide confidence scores, which help you assess the trustworthiness of the extracted data and make informed decisions in downstream workflows.
+
+Another example shown is the analysis of a receipt using the pre-built receipt model in Azure Document Intelligence. Once again, the service performs OCR, identifies text, preserves bounding boxes with their coordinates, and returns a structured JSON response.
+
+This JSON response includes the entity type, whether the value is a string or a number, the extracted value, the confidence score, and even the page number from which the data was extracted. Everything is included, staying completely true to the nature of predictive AI.
+
+Now let’s look at what we aim to achieve as part of the lab demo, where Azure Document Intelligence plays a central role.
+
+Imagine you’re working in the taxation department of a company, and you have multiple invoice documents. Your goal is to create a summarized view of these invoices—something like a Power BI column chart.
+
+To achieve this, you first take the invoices and make an API call to the pre-built invoice model in Azure Document Intelligence. This service processes the invoices and returns a structured JSON response.
+
+Next, this JSON response is passed to the Azure AI Language service, which detects and masks PII (Personally Identifiable Information) present in the data. Once this step is complete, the processed information is sent to a Foundry agent.
+
+Now, suppose the user asks a question like:
+“Could you please create a chart with the invoice total on the Y-axis and the invoice names on the X-axis?”
+
+Because the Foundry agent has access to a code interpreter tool, it takes the structured data from the predictive AI pipeline and automatically generates a column chart. This chart displays invoice totals on the Y-axis and invoice names on the X-axis, giving a clear summarized view of the company’s taxation for a given month.
+
+This entire demo showcases how generative AI (Foundry agents) works together with predictive AI services like Azure Document Intelligence and Azure AI Language Service to bring an end-to-end intelligent workflow to life.
+
 # **E) Lab: Invoice Analysis Lab (Hands-On Lab)**
