@@ -95,6 +95,18 @@ This Repository contains my "Microsoft Foundry: AI Agents, Foundry IQ, MCP &amp;
 
 **F) Lab: Creating Foundry IQ Agent via Python Notebook (Hands-On Lab)**
 
+**VII) Building Multi-Modal Agentic Applications**
+
+**A) Introduction to Multi-Modal AI Applications**
+
+**B) Introduction to PII masking with Azure Language Service**
+
+**C) Lab: PII Text Redaction with Foundry Agent (Hands-On Lab)**
+
+**D) Introduction to Azure Document Intelligence**
+
+**E) Lab: Invoice Analysis Lab (Hands-On Lab)**
+
 
 
 
@@ -1922,3 +1934,130 @@ The agent also references elements from the Sustainability Evidence Schema, incl
 At the end of the response, the agent includes a list of source documents. However, it only references the Carbon Ops ESG Intelligence Model and does not include the Sustainability Evidence Schema document. This highlights an area for improvement, particularly around traceability and grounding transparency, which are critical principles in responsible AI systems.
 
 With that, the video concludes. We have successfully created a Foundry IQ–grounded agent using a code-first approach, connected it to a knowledge base via an MCP server, handled configuration errors, and validated the agent’s responses against the original source documents. In the next set of videos, we’ll continue building on this foundation and explore further enhancements.
+
+# **VII) Building Multi-Modal Agentic Applications**
+
+# **A) Introduction to Multi-Modal AI Applications**
+
+Let us now talk about multimodal generative AI applications, which essentially combine the power of predictive AI and generative AI to unlock capabilities that were not possible before. To truly understand multimodal AI, we should first understand what multimodality itself means.
+
+When you build a single-modal AI application, you typically send one type of data as input and expect one type of data as output. For example, if you provide text as input, you receive text as output. This is what we call single modality.
+
+Multimodality, on the other hand, comes into play when you work with multiple types of inputs and outputs. In a multimodal system, you might send text, images, or charts as inputs to a model. Similarly, on the output side, you might receive text, images, charts, or even videos. This ability to handle different data types together is what defines multimodal AI.
+
+Now let us understand how multimodality can be introduced into generative AI applications. Interestingly, many modern AI models are already multimodal by nature. For example, there are models that take text as input and generate images as output. There are also models like Sora, which take text as input and generate videos. These are clear examples of multimodal models.
+
+However, the key point to highlight here is how multimodality works in real business applications. Consider an invoice extraction use case. In such an application, you take an invoice document as input, extract key fields from it, perform some computations, and then maybe generate a summary or visualize the data using charts.
+
+For instance, imagine generating a column chart where the total invoice cost is plotted on the y-axis and the invoice date or invoice name is plotted on the x-axis. The chart generation step can be handled by a generative AI agent that uses a code interpreter tool in the backend. This agent can write a Python function using Matplotlib, execute it in a sandboxed environment, and return the generated chart as output.
+
+However, there is a critical challenge here—preserving the layout of the invoice document. Layout preservation is extremely important, especially when invoices contain tables. If the structure of the table is broken, values such as quantity, price, or subtotal for individual products can get mixed up, leading to incorrect results. Once the table structure breaks, the entire logic falls apart.
+
+This is where predictive AI models become essential. To extract structured and layout-preserved insights from invoices, you must rely on a predictive AI service. The extracted insights—such as invoice totals, dates, and line items—are then passed to a generative AI agent. The agent uses this structured data to generate charts, summaries, or visualizations.
+
+This leads to an important distinction in the AI world. Broadly speaking, the AI ecosystem can be divided into two major segments:
+
+Predictive AI
+
+Generative AI
+
+Predictive AI services are best suited for scenarios where high accuracy and reliability are absolutely critical. These services are commonly used when masking personally identifiable information (PII) such as Social Security numbers, patient details, email addresses, or phone numbers. In regulated industries like finance and healthcare, you cannot afford mistakes or hallucinations, as they may lead to legal consequences. In such cases, predictive AI models are preferred because their behavior is more deterministic and trustworthy.
+
+On the other hand, generative AI models are used when you are willing to accept a trade-off between accuracy and creativity. Generative models are powerful, flexible, and capable of handling a wide variety of tasks, but they are also prone to hallucinations. Despite this, they are extremely useful for tasks such as chart generation, summarization, conversational interfaces, and content creation.
+
+In the Azure ecosystem, predictive AI services are available across different user personas. Citizen developers can use these services through Power Automate or Microsoft Copilot Studio. However, for developers and data scientists working in professional environments, Azure provides a wide range of pre-built predictive AI services.
+
+Some of the key services include Azure Document Intelligence (formerly Form Recognizer), which extracts structured information from invoices, receipts, and tax documents while preserving layout. There is also Azure Content Understanding (formerly Video Indexer), which analyzes and indexes video content. Additionally, Azure offers Computer Vision, Speech Services for speech-to-text and text-to-speech, and Azure Language Services for tasks such as named entity recognition and PII masking.
+
+If you want to build custom models from scratch using your own datasets and algorithms, Azure also provides Azure Machine Learning. However, that is beyond the scope of this discussion. The focus here remains on leveraging pre-built predictive AI services that are readily available.
+
+When you zoom out and look at the bigger picture, it becomes clear that building comprehensive, agentic AI solutions requires a combination of both predictive and generative AI. Services such as Azure AI Search, Azure AI Language, Azure AI Speech, Azure Computer Vision, Azure Document Intelligence, and Azure Content Understanding work together with generative AI models to solve complex business problems at scale.
+
+This is precisely why predictive AI and generative AI must work hand in hand. Complex, real-world problems cannot be solved using only one of these approaches. Recognizing this synergy is also the reason for including new multimodal use cases in the course.
+
+Before closing, let us briefly look at some multimodal business use cases. One example is a chatbot that accepts images as input. This can be built using Computer Vision APIs along with an agent, or by directly using multimodal generative models that support image inputs.
+
+Another use case is a chatbot that interacts with invoices, receipts, forms, and tax documents. In this case, relying solely on a multimodal generative model is not sufficient because layout preservation is critical. Here, Azure Document Intelligence is used on the predictive side, while generative AI models are used to build an intelligent conversational agent.
+
+A third use case involves healthcare analytics chatbots that must mask sensitive PII such as patient names, IDs, or Social Security numbers. For predictable and compliant PII masking, Azure Language Services are used. On top of that, generative AI models are employed to create an interactive chatbot experience.
+
+That concludes this introduction to multimodal AI applications and how predictive AI and generative AI complement each other. With this foundation in place, we can now move forward to the next set of videos.
+
+# **B) Introduction to PII masking with Azure Language Service**
+
+Now let us talk about the Azure Language service, which has a built-in capability to mask PII, that is, Personally Identifiable Information. Azure Language service is not limited to just PII masking—it offers a wide range of pre-built features as well as custom capabilities. Importantly, this is a predictive AI service that is already pre-built for you. You can simply make API calls to this service and integrate it directly into your business workflows.
+
+When we talk about the pre-built features of Azure Language service, it includes functionalities such as Named Entity Recognition (NER), Personally Identifiable Information (PII) detection, Personal Health Information (PHI) detection, language detection, sentiment analysis and opinion mining, text summarization, key phrase extraction, entity linking, and text analytics for healthcare.
+
+If you feel that the pre-built features are not sufficient for your specific business needs, Azure Language service also allows you to build custom features. You do not need to write or train machine learning algorithms from scratch. Instead, you simply provide your own labeled dataset, and the service handles the training internally. This makes it extremely developer-friendly and accessible.
+
+With custom features, you can build capabilities such as custom text classification, custom named entity recognition, conversational language understanding, and even orchestration workflows. This allows you to tailor the service precisely to your domain-specific requirements.
+
+Now let us focus specifically on Personally Identifiable Information and understand what it actually means and why it is so important for organizations. Suppose you are working in a financial institution or a healthcare organization. In such environments, there are strict regulations that you must comply with, such as HIPAA for healthcare and GDPR in many regions across the world. These regulations restrict how personal data can be stored, shared, and processed.
+
+Even something as simple as a person’s name can be considered PII. For example, if a user is named John Doe, that name itself is personally identifiable information. Other examples include Social Security numbers, birth dates, biometric identifiers, medical conditions, disabilities, home addresses, email addresses, medical and health records, phone and fax numbers, geographic information, device IDs or serial numbers, account numbers, URLs, and IP addresses.
+
+This is why organizations need to be extremely cautious about what data they send to large language models. When you send data to an LLM, you are often sending it to servers that may be located outside your geographic region and outside your direct control. This creates potential compliance and legal risks if sensitive information is exposed.
+
+To illustrate this, let us consider a medical report example. Suppose the text says: Mateo Gomez, a 28-year-old man, suffered a car accident near his home on Hollywood Boulevard on August 17, 2022, followed by details about fractures, CT scans, and the name of the practicing doctor, Jack John. This text contains multiple PII entities—name, age, date, geographic location, and the doctor’s name.
+
+Sending this raw text directly to a large language model would be risky. Instead, what you would prefer to send is a masked version of the same text. In this masked version, all PII entities—such as the patient’s name, age, passport number, geographic location, dates, and the practicing professional’s name—are replaced with asterisk symbols. This makes the content safe to process while still retaining its contextual meaning.
+
+At this point, an important question arises: how do you automatically transform the original text into the masked version? This is exactly where Azure Language Service’s PII entity masking capability comes into play.
+
+Let us now look at the lab flow that we will implement after this video. In this lab, we will build a Foundry agent that behaves like a standard agent. The agent itself will not have any tools. Instead, when a user submits a query—such as “Hi, my name is Bakshi, can you please help me plan a trip to India?”—the query is first routed to the Azure Language predictive AI service.
+
+The Azure Language service analyzes the query and identifies that Bakshi is a person’s name, which qualifies as PII. The service then masks this entity and returns a response where the name is replaced with a series of asterisk symbols. The transformed query would look like: *“Hi, my name is ********, can you please help me plan a trip to India?”
+
+This masked version of the query is then passed to the Foundry agent. In this way, the agent never receives any personally identifiable information, ensuring compliance and reducing legal risk.
+
+Although this use case is relatively simple, it is extremely valuable for teams working in highly regulated environments. It helps ensure that sensitive data is not accidentally exposed to large language models and prevents organizations from running into compliance or legal issues.
+
+This is also a feature that many people frequently ask questions about. That is why it makes perfect sense to include it as a hands-on lab, as it represents a very realistic and practical business use case.
+
+With that, we come to the end of this video. This was a complete overview of the Azure Language service and its PII entity masking capability. Without further ado, let us move on to the next set of videos.
+
+# **C) Lab: PII Text Redaction with Foundry Agent (Hands-On Lab)**
+
+With this video, we perform the PII Text Redaction lab using Azure Language Service and Foundry agents. For this lab, I am working inside the PII text redaction folder, which sits under the parent multimodal applications folder. Inside this folder, you can see two important files: an environment variable file and a Jupyter notebook that contains the main codebase.
+
+If you open the environment variable file, you will notice that we need four values configured: the Foundry project endpoint, the model deployment name, the Azure Language endpoint, and the Azure Language API key. To obtain the language endpoint and API key, we first need to deploy an Azure Language Service resource.
+
+For that, I navigate to Azure Portal, go to Azure.com, and search for Azure Language. Alternatively, you can simply search for Language, and you will see the Language service appear. Once selected, I click on the Create button to begin provisioning the resource.
+
+During the resource creation, I proceed with the default features and click on Continue to create your resource. I place this resource inside the same resource group as my Foundry project. The region I choose is Sweden Central, and for the name, I set it as Udemy Demo Language Resource. For pricing, I select the Free tier, which provides 5,000 transactions every 30 days at no cost. I make sure to accept the Responsible AI notice, keep all other settings as default, and finally click Review + Create to deploy the resource.
+
+Once the resource is deployed, I click on Go to resource, which takes me to the overview page. From there, I navigate to the Keys and Endpoint section. This is where the API key and endpoint URL are available, both of which we will need shortly.
+
+Now, instead of directly copying these values into our notebook, we follow best practices. I move to Microsoft Foundry, navigate to the Operate section, and then into the Admin area. The idea here is to work within a single pane of glass, so that everyone working in the Foundry environment can access shared resources without switching between tabs or manually passing credentials.
+
+In the Admin section, I click on Add Connection, choose the option to add a connection using an API key, and continue. I paste the Azure Language endpoint, keep the authentication type as API key, and then paste the API key value. I name the connection Azure Language Resource and click Connect. The connection now appears alongside other connected resources.
+
+This setup ensures that teammates do not need to search for API keys or endpoints manually. They can simply go to the Admin section, view connected resources, and reuse them. Additionally, this provides a strong governance view, allowing you to see what resources are actively being used across projects, helping avoid accidental deletion of resources that are critical in production.
+
+With the connection in place, I copy the API key and endpoint values from Foundry and paste them into the environment variable file. Next, I copy the Foundry project endpoint from the Foundry home page and paste it as well. For the model deployment name, I use GPT-4, which will be the same model used by the agent. After saving the file, we are ready to test the notebook.
+
+The notebook execution begins by loading all environment variables: the Foundry project endpoint, model deployment name, Azure Language endpoint, and API key. Next, we set up the Foundry project client and create an OpenAI client, which will be used to communicate with our agent.
+
+After that, we create a Text Analytics client using the Azure Language API key and endpoint. This client connects to the deployed Azure Language resource and allows us to use the Text Analysis APIs, specifically the PII entity recognition and masking capability.
+
+We then define a text redaction function. Inside this function, we call recognize_pii_entities using the text analytics client. The input is passed as a document—in this case, a single Python dictionary containing the user’s query—and the language is set to English. Once the response is returned, we iterate through all detected entities and print their details, including the entity value, category (such as name, location, or email), confidence score, offset position, and length.
+
+The redacted output text—where PII entities are replaced with asterisk symbols—is stored in a variable and returned by the function. This redacted text is what will eventually be sent to the agent.
+
+Next, we create our agent and name it Travel Assistant Agent. In the agent’s instructions, we specify that it should act as a travel assistant and help users plan trips, flights, hotels, and provide travel advice. The user query is first passed through the PII redaction function, and only the redacted text is sent to the agent.
+
+We then create a conversation object, which provides a conversation ID. This ID allows the agent to maintain contextual information across multiple turns. A loop is set up to continuously accept user input. Each user query is first processed by the PII redaction function, stored as redacted_input, and then sent to the agent using the OpenAI client along with the conversation ID and agent name.
+
+For testing, I enter a query such as: “My name is Kojo Singh Bakshi. My email address is dotbakshi3@outlook.com
+. Can you please help me plan a trip to India?” The PII redaction function is invoked, and we can see that the name is identified as a person entity with a confidence score of 1, along with its offset and length. The email address is also detected as an email entity, with its own confidence score, offset, and length.
+
+The redacted text shows both the name and email replaced with asterisk symbols. This redacted input is then passed to the agent. The agent responds with a travel plan while also explicitly stating that it cannot access or recall personal information due to privacy and security reasons.
+
+Because the conversation context only contains redacted data, if I now ask the agent to tell me my name or email address, it responds that it does not have access to that information. This confirms that PII is not being stored or leaked through conversation memory. When I type exit, the chat loop ends.
+
+This concludes the demonstration of PII text redaction using Azure Language Service integrated with a Foundry agent. It clearly shows how predictive AI and generative AI work together to enable privacy-safe, compliant AI applications. Without further ado, we can now move on to the next set of videos.
+
+# **D) Introduction to Azure Document Intelligence**
+
+# **E) Lab: Invoice Analysis Lab (Hands-On Lab)**
