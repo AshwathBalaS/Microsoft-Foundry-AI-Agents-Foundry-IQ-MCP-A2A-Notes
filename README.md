@@ -117,6 +117,30 @@ This Repository contains my "Microsoft Foundry: AI Agents, Foundry IQ, MCP &amp;
 
 **D) Lab: Building an Agent Chat System Workflow (Hands-On Lab)**
 
+**IX) Microsoft Agent Framework (MAF)**
+
+**A) Introduction to Microsoft Agent Framework**
+
+**B) Lab: Microsoft Foundry Basic Chat Agent with MAF (Hands-On Lab)**
+
+**C) Lab: Local Basic Chat Agent with MAF (Hands-On Lab)**
+
+**D) Lab: MCP Tool Agent with MAF (Hands-On Lab)**
+
+**E) Lab: Multi-Tool Agent with MAF (Hands-On Lab)**
+
+**F) Lab: Getting Started with DevUI to visualize MAF flows (Hands-On Lab)**
+
+**G) Lab: Working with Structured Outputs in MAF (Hands-On Lab)**
+
+**H) Lab: Sequential Workflow with MAF (Hands-On Lab)**
+
+**I) Lab: Visualizing Sequential Workflow with DevUI (Hands-On Lab)**
+
+**J) Lab: Parallel Workflows with MAF (Hands-On Lab)**
+
+**K) Lab: Visualizing Parallel Workflows with DevUI (Hands-On Lab)**
+
 
 
 
@@ -2349,3 +2373,455 @@ After updating the system prompt, we test the workflow again with various ingred
 Despite not finding a perfect rejection example during the demo, the overall concept and workflow design are sound. The system clearly demonstrates how agent-to-agent communication, evaluation, conditional branching, and iterative improvement can be implemented using Foundry’s orchestration tools.
 
 With that, we conclude this walkthrough of the Agent Chat System Workflow. The key takeaway is how powerful multi-agent orchestration becomes when combined with strong system prompts and conditional logic. Without further ado, we move on to the next set of videos.
+
+# **IX) Microsoft Agent Framework (MAF)**
+
+# **A) Introduction to Microsoft Agent Framework**
+
+Now with this video, let’s take a look at the Microsoft Agent Framework, which is meant to act as a successor to Microsoft AutoGen and the Semantic Kernel SDK that were released earlier. By now, it’s becoming extremely difficult to keep up with the pace of updates in the agent ecosystem. Almost every day, there seems to be a new framework, a new SDK, or a new architectural shift being announced.
+
+That said, let’s hope that the Microsoft Agent Framework turns out to be the most stable version among the many agent frameworks emerging today, and something we can genuinely build production-grade applications on. Just to lighten the mood a bit, there’s a small meme that perfectly captures the current situation. Every morning, I wake up, open LinkedIn, scroll through a few posts, maybe read a couple of Reddit threads—and there it is, another AI agent update. Hopefully, the framework we’re working with now is the one that enables us to build something truly meaningful and long-lasting.
+
+Before diving into a detailed introduction of the Microsoft Agent Framework and the capabilities it offers, it’s important to understand the mindset of the open-source community and the leadership behind it. The people driving this framework play a crucial role in shaping how it will evolve over time, and that vision directly influences the architectural decisions we see today.
+
+From my perspective, as agents continue to grow in prominence, we are moving toward what can be described as the Open Agent Web. Earlier, the web consisted almost entirely of human-to-human interactions. Today, that paradigm is shifting. We are now entering a world where we will have human-to-human, human-to-agent, and agent-to-agent communication happening at scale. The web is evolving, and agents are becoming first-class participants within it.
+
+These agents are expected to have memory, the ability to perform actions, call plugins and APIs, and even carry out complex reasoning tasks. This brings us to the first major challenge that will strongly influence the development of the Microsoft Agent Framework.
+
+The first critical factor is interoperability and cohesion. Agents need a shared language to exchange messages, requests, and structured data. Without this, collaboration quickly breaks down into isolated silos. You might have one agent written using one framework and another agent written using a completely different framework. Without an interoperable communication layer, these agents simply cannot talk to each other. That shared layer is essential.
+
+The second challenge relates to actions and API execution. Agents must be able to call backend APIs and perform real actions on behalf of users. Without this capability, an agent loses much of its practical value. This is where standards such as the Model Context Protocol (MCP) and Agent-to-Agent (A2A) communication come into play. MCP enables agents to communicate with APIs as plugins or tools, while A2A allows agents built using different frameworks to communicate with each other. These protocols form the foundation of interoperability in the agentic ecosystem.
+
+If you want to build agents that truly belong in the open world, you must keep these protocols in mind and choose a framework that evolves alongside them, rather than working in isolation.
+
+The next important aspect is complexity and orchestration. While single agents can handle discrete tasks, the real breakthrough will come from multi-agent orchestration. This involves teams of agents collaborating across multi-step, distributed processes. As a developer, most of your effort will go into building and managing these workflows, so choosing a framework that supports robust orchestration is critical.
+
+Another major concern arises from the fact that agents are now becoming part of the web itself. As this happens, new attack vectors and security risks emerge. This is why trust becomes the lifeblood of the agentic web. Every agent must have a verifiable identity, enforced through standards like OpenID Connect and JSON Web Tokens (JWTs), and integrated with enterprise identity systems such as Microsoft Entra ID. Agents must be authenticated and authorized before they can interact with other agents or invoke APIs.
+
+Finally, just as the traditional web required directories and search engines—you go to Google and search for information—the agentic web will also need discovery and catalog mechanisms. While Agent-to-Agent communication partially addresses this today, some form of agent directory system is likely to emerge in the future. All of these considerations highlight why selecting a future-ready framework is so important.
+
+This brings us to the Microsoft Agent Framework. Since it is positioned as the successor to both Semantic Kernel and AutoGen, it combines the best aspects of both. It integrates the structured, enterprise-ready design of Semantic Kernel with the powerful research and experimentation capabilities of AutoGen.
+
+The framework is built on several foundational pillars. The first pillar is an Open Standards Foundation. It supports protocols such as MCP, A2A, and OpenAPI, ensuring that agents built using this framework can participate in the open agent web rather than existing in isolation.
+
+The second pillar is a strong research-to-production pipeline. Historically, many experimental ideas were first built in AutoGen, and the most successful ones were later migrated into Semantic Kernel for production use. Microsoft Agent Framework formalizes and strengthens this pipeline.
+
+The third pillar is extensibility and community-driven design. The framework is open source, modular by nature, and designed to evolve with the ecosystem. This ensures that agents can integrate with external tools, protocols, and services as the agentic web grows.
+
+The final pillar is enterprise readiness. Microsoft Agent Framework is built for production environments, supporting observability, authentication, authorization, compliance, durability, human oversight, and secure execution. It integrates seamlessly with enterprise identity systems and supports modern security standards.
+
+From a model perspective, Microsoft Agent Framework works tightly with Microsoft Foundry, but it is not limited to OpenAI models. You can deploy models from providers such as Gemini, Anthropic, and others in Foundry. Once deployed, you simply create a client using the model endpoint and authorization key, and integrate it with the framework. This makes the framework vendor-agnostic and highly flexible.
+
+When comparing Semantic Kernel, AutoGen, and Microsoft Agent Framework, the differences become clear. In terms of interoperability, Microsoft Agent Framework leads with built-in support for MCP, A2A, and OpenAPI. In terms of memory, it supports both first-party and third-party pluggable memory stores, such as Redis and Cosmos DB, with out-of-the-box connectors available. It also excels in orchestration, supporting deterministic and dynamic workflows, including sequential, parallel, conditional, and branching patterns.
+
+From an enterprise standpoint, it offers superior readiness with observability, approvals, CI/CD integration, long-running durability, hydration mechanisms, and persistent memory stores.
+
+Now let’s look at the types of agents you can build using Microsoft Agent Framework. There are two main types: Foundry-tied agents and standalone agents.
+
+Foundry-tied agents are created by first creating a Foundry project client and connecting it to a Microsoft Foundry resource. This client is then integrated with Microsoft Agent Framework to create the agent. These agents have a persistent identity stored in Foundry, meaning they can be reused even if the runtime or Jupyter notebook session times out. You can also view these agents in Microsoft Foundry and inspect their execution using the Agent Trace stack, which shows tool calls, plugins used, and execution flow.
+
+Standalone agents, on the other hand, are not tied to Microsoft Foundry. In this case, you only create a vendor-specific model client, such as an OpenAI or Anthropic client, and attach it to the framework. These agents exist only for the duration of the runtime session. If the Python kernel or notebook session ends, the agent identity is lost. Additionally, agent traces cannot be viewed in Foundry and must instead be inspected using tools like Dev UI for Python or the .NET Aspire Dashboard for C#.
+
+For enterprise-grade applications, Foundry-tied agents are generally the preferred choice. However, standalone agents are useful for local development, compliance-restricted environments, or scenarios where models run entirely on-premises.
+
+In terms of agent execution, the process is straightforward but powerful. A user sends a query to the agent. The agent, powered by a foundational LLM, interprets the intent of the query. It then examines the tools or MCP servers available to it and decides whether it needs to invoke any of them. If tool calls are required, the agent enters an execution loop—calling the tool, analyzing the response, and determining whether the result satisfies the user’s intent. This loop continues until the agent is satisfied and returns a final response to the user.
+
+Microsoft Agent Framework also supports workflow-based execution. You can build sequential workflows, parallel workflows, and conditional workflows with branching logic. Agents can work together in group chats, where one agent acts as a manager and delegates tasks to other agents. This iterative collaboration continues until the manager agent is satisfied with the final output.
+
+Using tools like Dev UI, you can visualize these workflows in action. For example, in a sequential workflow involving a researcher agent and a writer agent, you can see each step of execution, the tools invoked, and token usage. Similarly, in parallel workflows—such as a travel planning scenario with multiple agents working simultaneously—you can view execution timelines and trace stacks in a visual format, providing deep insight into agent behavior.
+
+Finally, if you want to stay updated with the latest developments in the Microsoft Agent Framework ecosystem, the project is actively maintained on GitHub. You can follow updates, contribute code, raise issues, participate in discussions, and even fork the repository.
+
+That brings us to the end of this introduction to the Microsoft Agent Framework and what you can expect in this module. In the upcoming videos, we’ll move into hands-on demonstrations and practical labs.
+
+# **B) Lab: Microsoft Foundry Basic Chat Agent with MAF (Hands-On Lab)**
+
+With this video, we begin the first hands-on lab on working with Microsoft Foundry and the Microsoft Agent Framework. Before diving into the lab itself, there is a quick heads-up about the repository that will be used throughout this exercise. The GitHub repository is named Microsoft Foundry and is hosted on the instructor’s public profile. The repository URL is github.com/MicrosoftFoundry, and a direct link to it is also attached in the resources section of the video so that it can be easily accessed.
+
+When you explore this repository, you will find a folder named Microsoft Agent Framework. This folder contains all the labs that will be used for Microsoft Agent Framework activities in the course. The repository is already cloned into a local VS Code environment, and its structure is shown during the walkthrough.
+
+Inside the Microsoft Agent Framework folder, there are two subfolders. The first one is Azure AI Agent Cloud Agent. This folder is used for building Foundry-centric agents, also referred to as Foundry-first agents. These agents have their identity persisted in the Microsoft Foundry portal. The second folder is Azure OpenAI Local Agent, which is meant for building local agents using OpenAI models that are deployed in Microsoft Foundry. In this case, although the model is hosted in Foundry, the agent’s identity only exists during the runtime. Once the runtime ends, the agent’s memory is lost because it is not persisted in Microsoft Foundry and has no cloud identity.
+
+The lab starts with the notebook chat_with_agent_ai_foundry.ipynb. This notebook introduces how to work with the Microsoft Agent Framework by creating a simple agent whose identity is persisted both locally and in Microsoft Foundry. Even if the runtime session times out, the agent can be referenced again because its identity is stored in Foundry.
+
+The initial setup involves defining environment variables. These include the Foundry project endpoint and the Foundry deployment name, which together form the foundational layer on top of which the agent will be built. The agent created in this lab will be persisted both in the cloud (Microsoft Foundry) and locally within the Agent Framework runtime. Because of this cloud-based identity, the agent remains accessible even after the runtime session ends.
+
+To set up these environment variables, the Foundry project endpoint is fetched from the Microsoft Foundry resource. After that, the deployment name is retrieved by navigating to the Build section and then to Models in the Foundry portal. A GPT-4 series model is already deployed, and GPT-4 is selected for this lab. GPT-4.1 could also be used, but GPT-4 is sufficient. The key requirement is that the model must be a chat completion model, as Microsoft Agent Framework relies on chat-based models.
+
+To run the provided code snippets smoothly, a Python virtual environment is created using the dependencies listed in requirements.txt. SDKs frequently get updated, and without a virtual environment, dependency conflicts can cause Jupyter notebooks to fail. To avoid this, an integrated terminal is opened in VS Code, ensuring that the working directory is set to Azure AI Agent Cloud Agent. A PowerShell terminal is used, and a new virtual environment is created using the command python -m venv myvirtualenv.
+
+Once the virtual environment is created, a new folder with the same name appears in the directory. Inside this folder, there is a Scripts directory containing the activation scripts. The virtual environment is activated by navigating into the environment folder, moving into the Scripts directory, and running Activate.ps1. After activation, the terminal displays the virtual environment name in green, confirming that the correct Python kernel is active.
+
+After activating the virtual environment, the working directory is switched back to Azure AI Agent Cloud Agent. All required SDKs and libraries listed in requirements.txt are installed using the command pip install -r requirements.txt. This installs all dependencies inside the virtual environment, ensuring consistent behavior every time the notebook is executed. Without this setup, future dependency updates could cause the notebook to break.
+
+Once installation completes, the virtual environment is ready to be used in Jupyter Notebook. To make it available as a kernel, additional setup steps are required. These steps are documented in the virtual_environment_setup.md file. A script is run to register the virtual environment as a Jupyter kernel with a display name such as Python (myvirtualenv).
+
+After running the script, the kernel should appear under the Select Kernel option in the notebook. If it does not appear immediately, waiting a few minutes or restarting VS Code usually resolves the issue. If necessary, the kernel can also be selected manually through Select Another Kernel → Jupyter Kernel, where the virtual environment will appear.
+
+Once the kernel is attached, the notebook can be executed normally. Although it is possible to use a global Python kernel instead of a virtual environment, it is not recommended. If a global kernel is used, specific versions of the SDKs must be installed manually. In this lab, the versions used are Microsoft Agent Framework 1.0.0b251209 and Azure AI Projects SDK 2.0.0b2.
+
+The notebook execution begins by loading environment variables from the .env file. Since the agent will have an identity in Microsoft Foundry, an AI Project Client is created to connect to the Foundry resource using the endpoint and user credentials. Authentication is handled using az login (easy login). When prompted, the user signs in, and those credentials are used as the identity for accessing Foundry.
+
+Next, an OpenAI client is created because the backend model is GPT-4. A conversation is initialized using conversations.create(), which returns a conversation ID. This conversation ID is used to maintain chat history between the user and the agent across interactions.
+
+The Foundry project client, conversation ID, and model deployment name are then combined to create an agent client, which is an instance of the Azure AI client class. Using this agent client, an agent is created with the name Batman, and instructions describing Batman as the Dark Knight of Gotham City. Once this function executes, the agent is successfully created.
+
+At this point, the conversation ID is available and will be used for interacting with the agent. The first interaction with the agent is done in non-streaming mode, meaning the response is returned as a complete output. The query asked is “Who is the Joker?”, and the response describes Joker as Batman’s greatest nemesis and an embodiment of chaos in Gotham City.
+
+While the code cell runs, an important distinction is highlighted. Everything from creating the AI Project Client to retrieving the OpenAI client belongs to Microsoft Foundry. The moment the Azure AI client is created and create_agent() is called, Microsoft Agent Framework takes over. This clearly demonstrates a separation of concerns between Foundry infrastructure and agent orchestration.
+
+Next, the same agent is queried using streaming mode. The function run_stream() is used with the query “Tell me something interesting about Gotham City in ten points.” As responses arrive, they are printed chunk by chunk using checks on update.text. This streaming approach is especially useful for building rich and responsive user interfaces.
+
+Because GPT-4 supports image analysis, the agent is also tested with an image. An image named Joker_interrogation_scene.png is loaded from the assets folder. The image bytes are read and included in a chat message along with a text prompt asking the agent to describe the incident in the image. The message contains both text content and image data with MIME type image/png.
+
+The agent analyzes the image and returns a response describing the iconic interrogation scene between Batman and Joker, emphasizing the psychological intensity of the moment. This demonstrates multimodal capabilities within the Microsoft Agent Framework.
+
+Finally, the Microsoft Foundry portal is opened to verify that the agent has a persisted identity. In the Agents section, the Batman agent is visible along with its creation date and version history. The latest version corresponds to the agent created during this lab.
+
+By navigating to the Traces section, the full Agent Trace Stack can be viewed. Three runs are visible under the same conversation ID: one non-streaming chat, one streaming chat, and one image analysis request. Each run includes metadata such as token usage. The first run consumed 259 tokens, the second consumed 825 tokens, and the image analysis consumed 2132 tokens.
+
+This concludes the lab. The video demonstrated how to create a Foundry-centric agent using Microsoft Agent Framework, interact with it using streaming and non-streaming responses, perform image analysis, and inspect execution traces directly in the Microsoft Foundry portal. The course then proceeds to the next set of videos.
+
+# **C) Lab: Local Basic Chat Agent with MAF (Hands-On Lab)**
+
+Alright, so with this video, we’ll be working on the Microsoft Agent Framework lab, where instead of creating a Foundry-centric (Foundry-first) agent, we will create an agent whose identity exists only within the runtime. This means the agent will not be visible inside Microsoft Foundry and will only live as long as the runtime session is active.
+
+There are several practical use cases for this approach. For example, you may want to create agents that operate on local elements, run local orchestration workflows, or work with compliance requirements where persisting an agent identity in Microsoft Foundry is not allowed. Another scenario could involve using foundation models from different vendors, where you want to build and execute an agent locally without associating it with a Foundry identity.
+
+To perform this lab, we’ll use the notebook named chat_with_agent_azure_openai.ipynb, which is located inside the Azure OpenAI Local Agent folder. This folder itself resides under the Microsoft Agent Framework parent directory. This notebook demonstrates how to build and interact with a local agent step by step.
+
+The overall flow of this lab is straightforward. We will take an OpenAI model deployed in Microsoft Foundry—most likely a GPT-4 model—and use three key values: the Azure OpenAI API key, the Azure OpenAI endpoint, and the deployment name. Using these values, we’ll create a local agent via the Microsoft Agent Framework, where the agent’s identity exists only during runtime. Once the Python notebook session ends, the agent identity is completely lost.
+
+To begin, we first need to populate the environment variables file. Specifically, we need the Azure OpenAI API key, endpoint, and deployment name. To retrieve these, go to Microsoft Foundry, navigate to the Models section, and select a GPT-4 chat completion model. Any chat completion model will work fine for this lab.
+
+When the model opens in the playground view, navigate to the Code section. Make sure you are viewing the Python OpenAI SDK and that the Completions API is selected. Also ensure you are looking at the Key Authentication option. From here, copy the endpoint URL and paste it into the environment variable file.
+
+Next, retrieve the API key from the key icon shown in the same section. This key will also be added to the environment variable file. Finally, set the model deployment name, which in this case is simply GPT-4. Once all values are filled in, save the file.
+
+Regarding the environment setup, you already have a requirements.txt file and supporting scripts included in the repository. If you’ve already created a virtual environment during the first Microsoft Agent Framework lab, you can reuse it here. However, if you prefer to use a global Python kernel, make sure you install the Agent Framework SDK by running the provided installation cell in the notebook.
+
+Moving on to the code itself, we start by importing the environment variables—namely the API key, endpoint, and deployment name—from the .env file. We then proceed to create the OpenAI chat client and the agent.
+
+It’s important to notice here that we are not creating a Foundry project client. This is because the agent we’re building is not Foundry-centric. Instead, we directly use the OpenAI chat client, which connects to the deployed OpenAI model using the environment variables we configured earlier.
+
+The OpenAI chat client is created using the base URL (endpoint), the deployment name, and the API key. Once the client is ready, we create the agent with instructions such as “You are Batman, the Dark Knight of Gotham City.” To clearly differentiate it from Foundry agents, we name it “Batman Agent – Local Agent.”
+
+When we run this cell, a local agent is created whose identity exists only within the framework runtime. Next, we initiate a chat loop with the agent. This loop continues accepting user input until the user types exit, allowing multiple conversational turns.
+
+For example, we ask: “Hi, how are you? Is everything alright in Gotham?” The agent responds in a non-streaming fashion, returning a complete response at once. Once satisfied, we exit the loop by typing exit.
+
+After that, we demonstrate streaming responses using agent.run_stream. We prompt the agent with “Tell me something interesting about Gotham City in ten points.” This time, the response is printed chunk by chunk, word by word, as it arrives from the stream.
+
+Next, we test image analysis with the local agent. We use the same image as before—joker_interrogation_scene.png, stored in the assets folder. We open the image locally, load its bytes into a Python variable, and construct a chat message with two parts: one containing the text prompt and the other containing the image data with media type set to image/png.
+
+This message is then sent to the agent using agent.run, and the response is returned in a non-streaming fashion. The agent describes the interrogation scene, discussing Batman, Joker, and the psychological intensity of the moment.
+
+Finally, we verify whether this agent has an identity in Microsoft Foundry. The agent we created is named “Batman Agent – Local Agent.” When we navigate to the Agents section in Microsoft Foundry, we can see previously created Foundry agents, but this local agent does not appear.
+
+This confirms that the agent we created is truly a local agent. It does not have a Foundry identity and only exists for the lifetime of the runtime session. Once the session ends, the agent and its memory are completely discarded.
+
+And that concludes this lab. This video demonstrated how to create, interact with, and validate a runtime-only local agent using Microsoft Agent Framework. Without further ado, we can now move on to the next set of videos.
+
+# **D) Lab: MCP Tool Agent with MAF (Hands-On Lab)**
+
+So with this lab, we’ll be exploring the Microsoft Agent Framework to build an agent that has access to a Model Context Protocol (MCP) tool. This lab focuses on creating an agent that can leverage an external MCP server to answer domain-specific questions using grounded knowledge rather than just its general language model capabilities.
+
+To perform this lab, we’ll be working with the MCP_tool.ipynb Jupyter notebook. This notebook is located inside the Azure AI Agent Cloud Agent folder, which itself resides under the Microsoft Agent Framework parent folder. In this lab, we will be building a Foundry-centric agent, meaning the agent will have its identity hosted both in the cloud (Microsoft Foundry) and locally within the framework runtime.
+
+Using the Microsoft Agent Framework, we’ll create this agent and attach an MCP tool to it. The MCP tool will be an object of type Hosted MCP Tool, and it will point to the Microsoft Learn MCP server. This server allows the agent to answer questions related to Microsoft technologies—such as providing code snippets, responding to learning-path questions, or referencing training modules available on the Microsoft Learn website.
+
+The Microsoft Learn MCP server is publicly hosted and unauthenticated, meaning the agent does not need any authentication mechanism to connect to it. This makes it very convenient for experimentation and learning-based use cases. Because the server is hosted remotely, the agent can query it dynamically to retrieve up-to-date, authoritative content from Microsoft Learn.
+
+If we take a look at the environment variable file, we’ll see that we already have the required values configured. These include the AI Foundry project endpoint and the Foundry deployment name, which in this case is GPT-4. This means our agent will be created on top of a GPT-4 foundational large language model.
+
+We can now proceed with running the notebook. The first step involves setting up the environment by importing the AI Foundry project endpoint and deployment name from the environment variable file. Once this setup is complete, we move on to creating the MCP tool object.
+
+To attach the MCP server to our agent using Microsoft Agent Framework, we import the Hosted MCP Tool functionality and create an instance of it. This object requires two parameters. The first parameter is the name, which we set as Microsoft Learn MCP Tool. The second parameter is the URL, which points to the anonymous Microsoft Learn MCP server hosted at microsoft.com/api/mcp. Since this server accepts anonymous requests, no authentication flow is required.
+
+Once the MCP tool is defined, we move on to creating the MCP-enabled agent. Because this is a Foundry-centric agent, we first create a Foundry project client using the project endpoint and Azure CLI credentials. This client establishes a connection between our local code and the Microsoft Foundry resource.
+
+Next, we create an OpenAI client to initiate a conversation. This returns a conversation ID, which allows us to maintain the user-agent interaction within a single conversational context. This conversation ID ensures continuity between user queries and agent responses.
+
+With the conversation ID available, the Foundry project client creates an agent client of type Azure AI Client. This is where the Microsoft Agent Framework comes into play. The agent client is created using the project client, conversation ID, and the model deployment name, which again is GPT-4.
+
+We then create the agent itself using the create_agent function. The agent is named DocsAgent, and its instructions are set to “You are a helpful assistant that can help with Microsoft documentation questions.” As part of the agent configuration, we pass the Microsoft Learn MCP Tool as one of its tools. Once this function is invoked, our MCP-enabled Foundry-centric agent is successfully created.
+
+Now that we have both the agent and the conversation ID, we can start interacting with the agent. One important behavior to understand when working with MCP tools is the approval mechanism. By default, when an agent decides to invoke an MCP tool, it asks the user for approval before making the call. This behavior is controlled by the handle_approvals_with_thread mechanism.
+
+There are two ways to handle this. The first approach is to disable approvals entirely by setting the approval mode of the Hosted MCP Tool to never require. When configured this way, the agent autonomously invokes the MCP server without asking the user for permission. The second approach is to programmatically handle approvals by intercepting the agent’s function call request and automatically responding with approval on the user’s behalf.
+
+In this notebook, the second approach is used. Whenever the agent requests a function call, the handle_approvals_with_thread function automatically responds with a “yes”, allowing the MCP server invocation to proceed without manual user input. This ensures a seamless experience while still preserving control over tool usage.
+
+We then test the agent by asking a query such as “How to create an Azure Storage account using Azure CLI?”. The agent processes the query, determines that it needs external knowledge, and invokes the MCP tool. The approval handler automatically approves the request, and the agent proceeds to call the MCP server.
+
+As part of the response, we can see that the agent invokes a tool named Microsoft Code Sample Search, which is available on the MCP server. The parameters passed include the programming language, which in this case is Azure CLI. The agent then returns a response that includes not only the explanation but also a Microsoft Learn documentation link containing relevant Azure CLI commands.
+
+Because this is a Foundry-centric agent, we can navigate back to Microsoft Foundry and inspect the Agent Trace Stack. Upon refreshing the Agents section, we can see the DocsAgent, including its version history. The agent configuration clearly shows the attached tool, which is the Microsoft Learn MCP Tool, along with the remote MCP server URL.
+
+When we open the Traces section, we can view the full conversation lifecycle. The trace reveals that the agent first queried the MCP server to discover available tools, then invoked the Microsoft Code Sample Search tool, and finally generated the response using the grounded data returned by the MCP server.
+
+Looking at the metadata, we can see that the total token usage for this conversation is around 7,208 tokens. This higher token count is expected because the agent ingested a large amount of grounded knowledge from the Microsoft Learn documentation, in addition to generating the final response.
+
+And that brings us to the end of this lab. This video demonstrated how to build a Foundry-centric MCP-enabled agent using Microsoft Agent Framework, attach a Hosted MCP Tool, handle approvals, and analyze the agent’s behavior through the Foundry trace stack. Without further ado, we can now move on to the next set of videos.
+
+# **E) Lab: Multi-Tool Agent with MAF (Hands-On Lab)**
+
+So with this video, we’ll be taking a look at how you can use Microsoft Agent Framework to create a Foundry-centric agent with multiple tools attached to it. The idea behind this lab is to understand how a single agent can intelligently choose between different tools depending on the user’s query and produce accurate, grounded results.
+
+To perform this lab, we’ll be working with the multiple_tools.ipynb Jupyter notebook. This notebook is located inside the Azure AI Agent Cloud Agent folder, which itself resides under the Microsoft Agent Framework parent folder. As far as this notebook is concerned, the required environment variables—namely the AI Foundry project endpoint and the Foundry deployment name—are already configured.
+
+Before diving into the code, let’s first understand the overall lab flow. The first step is creating a Foundry-centric agent, meaning the agent will have an identity that persists both in the Microsoft Foundry cloud and locally within the framework runtime. To this agent, we’ll be attaching two tools.
+
+The first tool is a Code Interpreter tool. This tool enables the agent to generate Python code dynamically and execute that code inside a sandboxed environment. Once executed, the agent can return the output of that code execution back to the user. This is extremely useful for scenarios involving calculations, data processing, or logic validation.
+
+The second tool is a Hosted MCP Tool. This tool connects the agent to the Microsoft Learn MCP server, allowing the agent to answer queries related to Microsoft documentation, training modules, learning paths, and code samples published on the Microsoft Learn website.
+
+To implement this, we’ll be using both the Microsoft Agent Framework SDK and the Azure AI Projects SDK, because we’re building a Foundry-centric agent that must connect to a Microsoft Foundry project hosted in the Azure portal.
+
+We begin by loading the environment variables, which include the Foundry project endpoint and the model deployment name. Once that setup is complete, we move on to loading the first tool, which is the Hosted Code Interpreter tool. This tool is imported from the Microsoft Agent Framework and instantiated as an object that can later be attached to the agent.
+
+Next, we create the Hosted MCP Tool. Once again, we import the Hosted MCP Tool class from the agent framework and create an object with the name set to Microsoft Learn MCP Tool. The URL for this MCP server is set to learn.microsoft.com/api/mcp, which is a publicly hosted and unauthenticated MCP server.
+
+With both tools ready, we move on to creating the multi-tool agent. Since this is a Foundry-centric agent, the first step is to create a Foundry project client using the project endpoint and Azure CLI credentials. This establishes secure connectivity between our local codebase and the Microsoft Foundry resource.
+
+Next, we create an OpenAI client, which is used to generate a conversation ID. This conversation ID is essential for maintaining continuity across user-agent interactions. Once the conversation ID is generated, we create an Azure AI Client, passing in the Foundry project client, the conversation ID, and the model deployment name.
+
+Finally, we create the agent itself using the create_agent function. The agent is named Multi Tool Agent, and its instructions are set to “You are a helpful multi-tool agent.” The key part here is attaching both tools to the agent. This is done by passing the tools as an array, where the first element is the Code Interpreter tool and the second element is the Microsoft Learn MCP tool.
+
+At this point, the agent is fully set up with multiple tools, and the conversation ID is active. However, there is one more important aspect to address: human approvals. Both the Code Interpreter tool and the MCP tool require user approval before execution.
+
+To handle this smoothly, a function named handle_approvals_with_thread is used. Instead of prompting the user for approval every time, this function automatically evaluates approval requests to true. The function works by invoking the agent using agent.run, examining the agent’s response, and checking whether the agent is asking for human approval. When such a request is detected, the function appends a new message to the conversation history on behalf of the user, approving the tool execution. This allows the agent to proceed autonomously.
+
+Now let’s test the agent with our first query:
+“Can you write a Python function to calculate the factorial of a number using recursion and give me the output for number 100?”
+
+When this query is executed, the agent decides to use the Code Interpreter tool. First, it generates the Python code required to compute the factorial using recursion. Then, it executes that code inside the sandbox environment and returns the result. The output clearly shows the factorial of 100, which is a very large number, confirming that the Code Interpreter tool was successfully invoked and executed.
+
+Next, we test the agent with a second query:
+“How to create an Azure Storage account using Azure CLI?”
+
+For this query, the agent determines that it needs external documentation and chooses to invoke the Microsoft Learn MCP server. It uses the MCP tool to search for relevant code samples and documentation. The response includes a summarized explanation along with a link pointing back to learn.microsoft.com, which contains official documentation on creating an Azure Storage account using the Azure CLI.
+
+To validate all of this behavior, we go back to Microsoft Foundry and inspect the Agent Trace Stack. After refreshing the Agents section, we can see the Multi Tool Agent listed. Drilling down into the agent and navigating to the Traces section reveals the active conversation ID.
+
+Looking at the first query trace, we can see that the agent initially queried the MCP server to inspect available tools. After determining that the MCP server was not relevant for calculating factorials, it invoked the Code Interpreter tool, generated the Python function, executed it in the sandbox environment, and returned the computed factorial of 100.
+
+For the second query, the trace shows that the agent made a call to the MCP server and then invoked the Microsoft Code Sample Search tool. After receiving the grounded information, the agent summarized the response and presented it to the user along with relevant documentation links.
+
+Reviewing the metadata for the conversation, we can see that the total token usage is close to 7,000 tokens. This is expected, especially for MCP-based queries, because a significant amount of grounding knowledge is retrieved from the Microsoft Learn documentation and passed to the model.
+
+And that brings us to the end of this lab. This video demonstrated how to create a multi-tool Foundry-centric agent using Microsoft Agent Framework, attach both a Code Interpreter tool and an MCP tool, automatically handle human approvals, and analyze the agent’s behavior using the Microsoft Foundry trace stack.
+
+# **F) Lab: Getting Started with DevUI to visualize MAF flows (Hands-On Lab)**
+
+In this video, we’ll be taking a look at how you can get started with Dev UI to visualize and inspect the Agent Trace Stack for all the workflows and agents you build using the Microsoft Agent Framework. Dev UI allows you to see step-by-step execution of your agents, streaming responses, and the overall workflow in a highly interactive way.
+
+To perform this lab, we’ll be using the Python script dev_ui_agent_tracing.py, which is located inside the Azure Agent Cloud Agent folder under the Microsoft Agent Framework parent folder.
+
+Before running the script, you need to have Dev UI installed in your Python kernel. You can install it using the following command in your terminal:
+
+pip install agent-framework-dev-ui
+
+
+The version used in this lab, as specified in the requirements.txt file, is 1.0.0 B25 12019. If you are not using a virtual environment and want to run the code on the global Python kernel, simply open your terminal and install the exact version:
+
+pip install agent-framework-dev-ui==1.0.0b25-12019
+
+
+Additionally, before running the script, ensure that your AI Foundry project endpoint and deployment name environment variables are already set, as the agent creation depends on these values.
+
+Looking at the Python script, the first section defines a function to create an agent, which in this lab is called Docs Agent. This function takes two parameters: the model deployment name and the project endpoint.
+
+Using these two parameters, the script first creates a Foundry project client, which connects to your Microsoft Foundry project resource. This ensures that the agent is Foundry-centric, meaning its identity is persisted in the cloud and can be viewed from the Microsoft Foundry portal.
+
+Next, an OpenAI client is used to create a conversation ID, which allows the agent to maintain context across interactions. Using the project client, the conversation ID, and the model deployment name, an agent client is created and named chat client. Finally, the Docs Agent is instantiated with instructions:
+
+“You are a helpful assistant that can help with documentation questions.”
+
+This sets up the agent for general-purpose documentation-related queries.
+
+The next part of the script focuses on integrating the agent with Dev UI. This is done through an asynchronous function called load_agent. This function does two things:
+
+Loads the environment variables from the .env file (project endpoint and model deployment name).
+
+Invokes the agent creation function asynchronously to create the Docs Agent.
+
+Once the agent is created, it is stored in a Python variable named agent. Dev UI is then started using the following function:
+
+serve(entities=[agent], auto_open=True, tracing=True)
+
+
+Here:
+
+entities: This could be the agent itself or sequential, parallel, or conditional workflows that you want to visualize and generate trace stacks for.
+
+auto_open=True: Automatically opens Dev UI in the browser on localhost when the script runs.
+
+tracing=True: Enables tracing of every step of the agent execution or workflow execution.
+
+With your virtual environment activated, you can run the Python script using:
+
+python dev_ui_agent_tracing.py
+
+
+Running this script performs two main actions simultaneously:
+
+Creates the Docs Agent with all the configurations specified.
+
+Launches Dev UI in the browser at localhost:8080.
+
+Once Dev UI is open, you will see the Docs Agent created. You can now interact with the agent. For example, you might ask:
+
+“Can you tell me something about deploying an Azure Storage Account via the Azure CLI?”
+
+Even without attaching specific tools, the agent can answer based on its general knowledge and training.
+
+The Dev UI interface is visually appealing and supports streaming responses, where the output is displayed chunk by chunk as the agent generates it. In this example, the response involved 926 tokens. You can also start a new conversation within Dev UI, which creates a new interaction thread with a unique conversation ID.
+
+If you want to inspect the Agent Trace Stack, go to the Traces section in Dev UI. Here, you can see details like:
+
+Span ID and Trace ID
+
+Duration of execution
+
+Entity involved (the agent, in this case Docs Agent)
+
+Model used (ChatGPT-4 for this agent)
+
+Token usage (for example, 37 input tokens and 889 output tokens)
+
+If any tools were attached to the agent, Dev UI would also show tool execution details in the trace stack. The trace provides a structured view of the entire conversation and agent actions, which is extremely useful for debugging, monitoring, or auditing the agent.
+
+In summary, this lab demonstrated how to:
+
+Create a Foundry-centric agent using Microsoft Agent Framework.
+
+Launch and interact with the agent in Dev UI.
+
+Stream responses in real-time to the Dev UI interface.
+
+Inspect the Agent Trace Stack to review agent execution, token usage, and tool actions.
+
+Dev UI provides a powerful, interactive way to visualize agents and workflows, making it easier to understand how agents process queries, execute tools, and respond.
+
+This fully covers getting started with Dev UI for agent visualization and tracing in Microsoft Agent Framework.
+
+# **G) Lab: Working with Structured Outputs in MAF (Hands-On Lab)**
+
+In this video, we take a look at a really powerful and useful feature that Microsoft Agent Framework offers, which is structured output streaming from an agent built using Microsoft Agent Framework. This feature becomes extremely important when you want your agent to return data in a strict, predefined structure instead of free-form text.
+
+To perform this lab, we work with the structured_output.ipynb Jupyter notebook. This notebook is located inside the Azure Agent Cloud Agent folder, which itself resides under the Microsoft Agent Framework directory. As with previous labs, the required environment variables are already configured, specifically the Foundry project endpoint and the Foundry deployment name.
+
+To understand why structured output streaming is useful, let’s look at the problem statement. Suppose you are building an HR resume screening agent. This agent is given multiple PDF resumes for a job opening. Along with these resumes, the agent also has access to a plugin that allows it to populate an Excel workbook or a database. In this example, we focus on populating an Excel sheet.
+
+Once the HR resume screening agent finishes analyzing the resumes, you want it to automatically populate the Excel sheet in a specific format. For example, column one should contain the first name, column two the last name, column three the candidate’s qualifications, and column four any exceptional qualities that stand out. To populate such a sheet reliably, you cannot depend on unstructured, free-text responses from the agent. Instead, you need structured data that strictly conforms to a predefined schema.
+
+This is exactly where structured output streaming in Microsoft Agent Framework becomes valuable. With this capability, you can instruct the agent to always return its response in a format that matches a predefined schema. This structured output can then be directly consumed by downstream systems, such as Excel, databases, or other applications.
+
+You might wonder why you cannot simply enforce this format through the system prompt. While that approach can work sometimes, it is not highly reliable. Large language models do not always strictly follow instructions provided in prompts, even when those instructions are hardcoded. Structured output streaming addresses this limitation by enforcing schema compliance at the framework level, making the output far more accurate and consistent.
+
+The lab begins by setting up the required environment variables, namely the project endpoint and the model deployment name. Once these are loaded, we proceed to create a Foundry-centric agent, following the same pattern used in earlier labs.
+
+First, we create a Foundry project client, then create an OpenAI client to generate a conversation ID. This conversation ID is then used along with the project client and model deployment name to create an Azure AI client, which acts as the agent client. Using this agent client, we create an agent named Job Candidate Extractor. The instructions for this agent are: “You are an HR assistant that extracts structured information about a job candidate from text.”
+
+At this point, both the agent and the conversation ID are successfully created.
+
+Although the example uses plain text input, in a real-world scenario the input could be a PDF resume. You would first extract the textual content from the PDF and then pass that text to the agent. The agent would process the text and return structured data, which could then be used to populate an Excel workbook or any other structured data store.
+
+Next, we define the structured output schema using Pydantic, which is the mechanism Microsoft Agent Framework uses to enforce structured responses. A Pydantic class is created by inheriting from BaseModel. This class defines exactly what fields the agent must extract and their respective data types.
+
+In this schema, the agent is expected to extract the candidate’s name as a string, experience years as an integer, skills as a list of strings (since a candidate can have multiple skills), and current role as a string. With this Pydantic class defined, we now have a strict schema that the agent’s output must conform to.
+
+The agent is then invoked using structured output streaming. The agent creation process remains the same as before; the key difference lies in how the agent is executed. When running the agent with a query, we pass the previously created Pydantic schema in the response_format parameter.
+
+The input text provided to the agent is:
+
+“Hi, I’m Alice Johnson. I’ve been a software engineer for six years, mainly working with Python, Azure, and React. Currently a senior developer at Contoso Limited.”
+
+Because structured output streaming is enabled, the agent returns its response as a JSON object that strictly follows the predefined schema. The output includes the name as “Alice Johnson,” experience years as 6, skills as a list containing Python, Azure, and React, and the current role as “Senior Developer.”
+
+If you do not want to work with the raw JSON blob, you can also access each field individually. The response object contains a value attribute, from which you can extract name, experience_years, skills, and current_role separately and use them however you want.
+
+With this structured output available, the agent can immediately pass these values to a plugin that populates an Excel workbook. Each column can be filled precisely—name in column one, experience years in column two, skills in column three, and current role in column four—without any ambiguity or parsing errors.
+
+In summary, this lab demonstrated how to create a Foundry-centric agent and invoke it using structured output streaming to return responses in a predefined JSON schema. This approach ensures high accuracy, reliability, and seamless integration with downstream systems such as Excel or databases. Structured output streaming solves one of the biggest challenges of working with large language models by guaranteeing consistent, schema-compliant outputs.
+
+That concludes the walkthrough of structured output streaming in Microsoft Agent Framework. Without further ado, we move on to the next set of videos.
+
+# **H) Lab: Sequential Workflow with MAF (Hands-On Lab)**
+
+In this video, we work with sequential workflows using Microsoft Agent Framework and Microsoft Foundry. To perform this lab, we use the notebook named sequential_workflow.ipynb, which is located inside the Azure AI Agent → Cloud Agent → Microsoft Agent Framework folder. Before running the notebook, the only prerequisite is to populate the .env file with two environment variables: the Foundry project endpoint and the Foundry deployment name.
+
+The goal of this lab is to build a sequential workflow composed of two agents: a researcher agent and a writer agent. The overall flow works as follows. A user provides a topic or a set of topics for which they want an article to be written. This input first goes to the researcher agent, whose responsibility is to gather relevant information, insights, and grounding knowledge related to the topic. The output from the researcher agent is then passed to the writer agent. The writer agent takes the original user query along with the researched information and, guided by its system instructions, produces a well-structured, coherent, and engaging article as the final output.
+
+We begin by executing the notebook and setting up the environment by loading the environment variables, specifically the project endpoint and model deployment name. Once this setup is complete, we define a reusable function to create chat agents. This function is named create_agent and takes two parameters: the agent name and the agent instructions. Every time this function is called, it creates a Foundry-centric agent. Inside the function, a Foundry project client is created first, followed by an OpenAI client that generates a conversation ID. Using the project client, conversation ID, and model deployment name, an agent chat client is created. Finally, the agent itself is created using the provided name and instructions.
+
+Using this function, we first create the researcher agent. The agent is named “researcher agent,” and its instructions specify that it is a knowledgeable researcher whose task is to gather information and provide insights on a given topic using reliable sources and presenting the information clearly and concisely. After invoking the function with these parameters, the researcher agent and its associated conversation ID are successfully created.
+
+Next, we create the writer agent using the same function. The writer agent’s instructions state that it is a creative writer whose task is to write an essay on a given topic with a focus on clarity, coherence, and engaging storytelling. Once this function is executed, the writer agent and its conversation ID are also created.
+
+At this point, the Microsoft Agent Framework becomes central to building the sequential workflow. In a workflow, each red box represents a node, and the green arrows between them represent edges. To execute a node, we define something called an executor. An executor specifies how an agent is invoked, what inputs it receives, and how its output is passed to the next node through the workflow context.
+
+The first executor is created to run the researcher agent. This executor is annotated and given an ID such as run_researcher_agent. It accepts the user query as input and also receives a workflow context parameter, which represents the data flowing through the edges of the workflow. Inside the executor, the researcher agent is invoked using agent.run, passing in the user query. Once the agent returns a response, the string content of that response is sent forward by yielding a message into the workflow context, allowing it to flow to the next node.
+
+Similarly, a second executor is created to run the writer agent. This executor is given an ID such as run_writer_agent. It takes the research data produced by the researcher agent as input, along with the workflow context. The writer agent is then invoked with the research data, and because this is the final node in the workflow, instead of sending another message forward, the executor yields an output. This output becomes the final result of the entire sequential workflow.
+
+Once both executors are defined, we construct the workflow itself. Using the workflow builder, we define the nodes and edges by adding an edge from the researcher agent executor to the writer agent executor. The start executor is explicitly set to the researcher agent, meaning all user queries enter the workflow at that node. Finally, the workflow is built and stored in a Python variable.
+
+To visualize the workflow, we use the to_mermaid() function, which generates a Mermaid diagram representing the workflow structure. This Mermaid syntax can be copied into a Markdown file, wrapped with the appropriate Mermaid code block syntax, and rendered in tools like VS Code to visually display the workflow. The diagram clearly shows the researcher agent executing first, followed by the writer agent, whose output represents the final workflow result.
+
+After building the workflow, we execute it and stream the events. During execution, it becomes clear that the researcher agent runs first, gathering information about the topic, followed by the writer agent, which produces the final article. For example, the output article begins with a discussion on how artificial intelligence is one of the most transformative technological advancements of the modern era and continues with a well-structured essay.
+
+Finally, we examine the agent trace stack in Microsoft Foundry. Navigating to the Agents section, we can see both the researcher agent and the writer agent listed. Each agent shows multiple conversation IDs because both were involved in different parts of the workflow. One conversation ID corresponds to the agent acting as the information provider, while another corresponds to it acting as the final responder.
+
+Inspecting the researcher agent’s traces reveals its output, which includes grounding knowledge about artificial intelligence, machine learning, deep learning, and applications across industries such as healthcare, finance, transportation, and retail. The metadata shows a token usage of around 887 tokens. Looking at the writer agent’s trace, we see the final article titled “The Impact of Artificial Intelligence on Society,” which discusses applications, challenges, future implications, and conclusions, with a token count of approximately 971.
+
+This completes the walkthrough of building a sequential workflow using a researcher agent and a writer agent in Microsoft Agent Framework and Microsoft Foundry. With this understanding, we can now move on to the next set of videos.
+
+# **I) Lab: Visualizing Sequential Workflow with DevUI (Hands-On Lab)**
+
+In this video, we work with sequential workflows using the Microsoft Agent Framework and visualize them using the Dev UI. To perform this lab, we use a Python script named sequential_workflow_dev_ui.py, located inside the Azure AI Agent, Cloud Agent, and Microsoft Agent Framework folder structure. The required environment variables, namely the Azure AI Foundry project endpoint and the model deployment name, are already configured. This Python script is essentially a direct conversion of the sequential workflow Jupyter notebook implemented earlier; the entire notebook code has been moved into a .py file so it can be executed directly and visualized through the Dev UI. At a high level, the script defines a reusable function to create agents by accepting an agent name and agent instructions, creating a Foundry project client, using an OpenAI client to generate a conversation ID, and then creating an Azure AI agent with the provided name and system prompt. Using this function, two agents are created: a researcher agent whose role is to gather reliable information and provide clear insights on a given topic, and a writer agent whose role is to produce a clear, coherent, and engaging article based on the researched content. 
+
+After creating the agents, executor definitions are implemented for each agent, which define how the agents run inside workflow nodes and how their responses are passed through the workflow context along edges. The researcher executor accepts the user query as input, invokes the researcher agent, and sends the textual output into the workflow context, while the writer executor takes the researcher’s output as its input, invokes the writer agent, and yields the final response as the overall workflow output. Once the executors are defined, an asynchronous function builds the sequential workflow by connecting the researcher executor to the writer executor with an edge and setting the researcher executor as the starting node. In the main function, logging is enabled to capture agent messages, traces, and events in the terminal, the workflow is built asynchronously, and a Dev UI server is started using the Dev UI SDK’s serve function by passing the workflow as an entity, enabling tracing, specifying port 8090, and automatically opening the UI in the browser. The script is then executed from a Python virtual environment, after which the agents are created, the workflow is built, and the Dev UI opens on localhost port 8090, visually showing the researcher agent at the beginning and the writer agent at the end of the sequential workflow. 
+
+From the Dev UI, the workflow is executed by providing a user input such as requesting an article on large language models and the transformer architecture; the researcher executor runs first, gathers and streams research output, passes it through the edge to the writer executor, and the writer agent generates the final article. During execution, the events panel streams progress updates and error information if any issues occur, while the traces section captures the complete execution timeline. After execution, the final article output is displayed, and the trace view shows detailed metadata including execution timestamps and token consumption for each agent, allowing the total token usage for the entire sequential workflow to be calculated by summing the researcher and writer agent tokens. This approach provides a powerful way to visualize, debug, and analyze multi-agent workflows, making it useful not only for development and troubleshooting but also for stakeholder demonstrations and understanding how agent-based systems execute end to end.
+
+# **J) Lab: Parallel Workflows with MAF (Hands-On Lab)**
+
+In this video, we explore how to create parallel workflows using Microsoft Agent Framework and Microsoft Foundry. To try out this lab, we use a Jupyter notebook named parallel_workflow.ipynb, located inside the Microsoft Agent Framework and Azure AI Agent Cloud Agent folders. The environment variables, namely the AI Foundry project endpoint and AI Foundry deployment name, are already set. The goal of this parallel workflow is to build a multi-agent travel assistant system.
+
+In this workflow, the user query comes in and first goes to the location picker agent, which identifies important cities or states for the user to visit. The first agent in the sequence, the destination recommender agent, examines these locations to recommend attractions such as heritage sites. The second agent, the cuisine suggestion agent, uses the locations selected to suggest local cuisines for the traveler. The third agent, the weather agent, provides expected weather conditions for the locations so users can pack appropriately, such as bringing woolens if it’s cold or light clothing in tropical climates. Finally, the itinerary planner agent takes the outputs from the location picker, destination recommender, cuisine suggestion, and weather agents to create a complete travel itinerary for the user based on their preferences and constraints.
+
+To begin the lab, we first set up the environment by importing the environment variables, including the project endpoint and deployment name. Next, we define a reusable function to create chat agents. This function takes an agent name and agent instructions, creates a Foundry project client for cloud persistence, generates a conversation ID using an OpenAI client, and then creates an Azure AI client to instantiate the agent. Using this function, we create five agents: the location picker agent, destination recommender agent, weather agent, cuisine suggestion agent, and itinerary planner agent, each with specialized system instructions for their respective tasks.
+
+Because each agent is a node in the workflow, we define executors to specify how agents run and interact. The location picker executor takes the user query as input, invokes the location picker agent, and passes its output via the workflow context to the three parallel agents: destination recommender, weather, and cuisine suggestion. The destination recommender executor runs in parallel with the weather and cuisine suggestion agents, takes the output from the location picker agent, and sends its results to the itinerary planner agent. The same pattern is followed for the weather executor and cuisine suggestion executor, each taking the location picker’s output and passing results forward.
+
+The itinerary planner agent is the final node in the workflow. It takes three inputs: the outputs of the cuisine suggestion agent, weather agent, and destination recommender agent. Since it is the last agent, its output is not sent along an edge but rather becomes the final output of the entire parallel workflow. The workflow context is passed to this agent, and the output is returned using the yield_output function.
+
+Once all agents and executors are defined, the parallel workflow is built by specifying the starting executor as the location picker agent. From there, the location picker’s output fans out to the three parallel nodes (destination recommender, cuisine suggestion, and weather agent), which then converge into a single node that executes the itinerary planner agent. The workflow is stored in a Python variable named rviz. We can also generate a mermaid diagram to visualize the workflow. By copying the dot_to_mermaid output into a markdown file named workflow.md and adding the mermaid syntax declaration at the top ('''mermaid), pressing Ctrl+Shift+V in VS Code displays the workflow diagram: the location selector at the start, the three parallel agents in the middle, and the itinerary planner agent at the end.
+
+When the workflow is executed, it takes around two minutes. The final output from the itinerary planner agent presents a comprehensive travel plan, including sustainable food suggestions, visits to tribal villages, hidden treasures in cities like Jaipur, Delhi, and Kerala, unique beverage experiences, culinary recommendations, cultural tips, and budget considerations. By inspecting Microsoft Foundry, we can see the conversation IDs for each agent and access their traces. For example, the itinerary planner agent’s latest conversation ID shows a detailed culinary guide, including must-try dishes in Jaipur, Delhi, and Agra.
+
+The metadata also provides token consumption information. For the itinerary planner agent’s response, the total tokens consumed are 2751. However, the total token usage for the entire parallel workflow is higher since each agent has a different conversation ID. By drilling down into each agent’s trace, we can calculate their individual token consumption and sum them to find the total for the workflow.
+
+Overall, this lab demonstrates how to design and execute parallel workflows with multiple agents using Microsoft Agent Framework. It shows how agents can run concurrently, share outputs via workflow context, and produce a unified result. Additionally, it highlights visualization options through mermaid diagrams and Foundry traces, enabling both debugging and stakeholder presentations. Without further ado, this concludes the video on parallel workflows in Microsoft Agent Framework.
+
+# **K) Lab: Visualizing Parallel Workflows with DevUI (Hands-On Lab)**
+
+In this video, we explore how to visualize parallel workflows built using Microsoft Agent Framework in the Dev UI environment. To perform this lab, we use the Python script parallel_workflow_dev.py, which is located inside the Microsoft Agent Framework and Azure AI Agent Cloud Agent folder. This Python script is essentially a consolidation of the code base implemented earlier in the parallel_workflow.ipynb Jupyter notebook. It contains the multi-agent parallel system that builds an itinerary for a trip or vacation. The workflow consists of the location picker agent, destination recommender agent, weather agent, cuisine suggestion agent working in parallel, and finally, the itinerary planner agent that synthesizes all the outputs into a complete travel plan.
+
+The Python script is structured to replicate the parallel workflow from the notebook while enabling integration with Dev UI. The script uses two environment variables: the Foundry project endpoint and the model deployment name. A reusable function is defined to create agents by taking the agent name and agent instructions. This function uses the Foundry project client and the OpenAI client to prepare a conversation, retrieve a conversation ID, and instantiate the agent. Each agent in the workflow corresponds to a node, and we define executor functions for each agent to specify how they should be executed.
+
+The executor functions include the location selector executor for the location picker agent, destination recommender executor, weather executor, cuisine suggestion executor, and finally, the itinerary planner executor. The location picker agent sits at the beginning of the workflow and receives the user query. The destination recommender, weather, and cuisine suggestion agents work in parallel, while the itinerary planner agent sits at the end, consolidating inputs from the three parallel agents.
+
+An asynchronous function, build_workflow, is used to create all agents, instantiate their executors, and assemble the parallel workflow. Once the workflow is built, the main function acts as the entry point for the Python script. Logging is enabled to capture workflow execution, agent messages, and event streams in the terminal. The Dev UI portal is launched using the serve function, where the workflow is passed via the entities parameter. The portal runs on port 8090, opens automatically, and has tracing enabled to monitor the complete agent execution stack.
+
+The Python virtual environment is set up with dependencies listed in requirements.txt. Once the environment is activated, the script is executed using Python, which creates the agents, builds the workflow, and opens the Dev UI automatically at localhost:8090. In Dev UI, the workflow visualization shows the location picker agent at the top, followed by the three parallel agents—destination recommender, weather, and cuisine suggestion agents—and finally, the itinerary planner agent at the bottom.
+
+To test the workflow, a user query like “Help me plan a trip/vacation to India for a month” is entered. The location selector agent executes first, followed by the three parallel agents. The execution of these parallel agents can be observed in real-time in the event stream on the right-hand side. Each agent’s execution status and completion time is logged. Once all three parallel agents complete, the itinerary planner agent executes, consolidating all inputs and generating the final output. The workflow ran successfully in about one minute.
+
+The final response from the itinerary planner agent provides a detailed trip plan, including destinations like Delhi and Mumbai, culinary suggestions, cooking classes in Jaipur and Goa, exploration of local food markets, and local snacks in Rajasthan, Gujarat, and Kerala. The traces section in Dev UI allows inspection of the complete agent trace stack, showing the execution flow from the initial location picker agent through all edges and nodes to the final itinerary planner agent. The trace stack provides a clear view of all events, enabling debugging and analysis of workflow execution.
+
+In summary, this lab demonstrates how to visualize parallel workflows created with Microsoft Agent Framework in Dev UI. It shows how multiple agents can work concurrently, how their outputs can be consolidated, and how the entire execution can be traced for debugging or stakeholder review. This visualization greatly aids both development and demonstration of multi-agent workflows.
+
+Without further ado, this concludes the video on visualizing parallel workflows in Microsoft Agent Framework using Dev UI.
